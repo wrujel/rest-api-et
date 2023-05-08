@@ -10,6 +10,7 @@ import router from "./router";
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 8080;
 
 app.use(
   cors({
@@ -23,8 +24,8 @@ app.use(bodyParser.json());
 
 const server = http.createServer(app);
 
-server.listen(8080, () => {
-  console.log("Server is listening on port http://localhost:8080");
+server.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
 
 mongoose.Promise = Promise;
