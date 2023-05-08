@@ -82,7 +82,7 @@ This is a blank express server with Typescript. It is ready to be deployed in Ra
 First, run the development server:
 
 ```bash
-npm start
+npm run dev
 ```
 
 Open [http://localhost:8080](http://localhost:8080) with your browser to see the result.
