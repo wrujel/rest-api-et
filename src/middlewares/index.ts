@@ -2,6 +2,9 @@ import express from "express";
 import { get, merge } from "lodash";
 
 import { getUserBySessionToken } from "../db/users";
+import { getProductById } from "../db/product";
+
+const ENVIRONMENT = process.env.ENVIRONMENT || "development";
 
 export const isAuthenticated = async (
   req: express.Request,
@@ -9,39 +12,39 @@ export const isAuthenticated = async (
   next: express.NextFunction
 ) => {
   try {
-    const sessionToken = get(req, "cookies.sessionToken");
-
+    let sessionToken =
+      get(req, "cookies.sessionToken") ||
+      (ENVIRONMENT === "development" ? get(req, "headers.sessiontoken") : null);
     if (!sessionToken) return res.sendStatus(403);
 
     const user = await getUserBySessionToken(sessionToken);
-
     if (!user) return res.sendStatus(403);
 
     merge(req, { identity: user });
 
     return next();
   } catch (error) {
-    console.log(error);
     return res.sendStatus(400);
   }
 };
 
 export const isOwner = async (
-  req: express.Request,
+  req: any,
   res: express.Response,
   next: express.NextFunction
 ) => {
   try {
-    const { id } = req.params;
-    const currentUserId = get(req, "identity._id") as string;
+    const { id } = req.query;
+    if (!id) return res.sendStatus(400);
 
-    if (!currentUserId) return res.sendStatus(403);
+    const product = await getProductById(id.toString());
+    if (!product) return res.sendStatus(404);
 
-    if (currentUserId.toString() !== id) return res.sendStatus(403);
+    if (product.user.toString() !== req.identity._id.toString())
+      return res.sendStatus(403);
 
     next();
   } catch (error) {
-    console.log(error);
     return res.sendStatus(400);
   }
 };

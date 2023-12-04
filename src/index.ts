@@ -1,5 +1,4 @@
 import express from "express";
-import http from "http";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression";
@@ -11,25 +10,22 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const FRONTEND = process.env.FRONTEND_BUILD_PATH;
 
-app.use(
-  cors({
-    credentials: true,
-  })
-);
-
+app.use(cors({ credentials: true }));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-const server = http.createServer(app);
+app.use("/api", router());
+app.use(express.static(FRONTEND));
 
-server.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server is listening on http://localhost:${PORT}`);
 });
 
 mongoose.Promise = Promise;
 mongoose.connect(process.env.MONGO_URL);
 mongoose.connection.on("error", (error: Error) => console.log(error));
 
-app.use("/", router());
+module.exports = app;
