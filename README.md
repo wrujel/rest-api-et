@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>REST API with Express and Typescript</h1>
+  <h1>Full Stack App with Express, Typescript and Angular</h1>
 </div>
 
 <div align="center">
@@ -57,38 +57,63 @@
       alt="Deployed in Railway" 
     />
   </a>
+  <a href="https://www.angular.dev" target="_blank">
+    <img
+      src="https://img.shields.io/badge/Angular-17.0.0-blue.svg?style=flat&logo=angular"
+    />
+  </a>
+  <a href="https://material.angular.io" target="_blank">
+    <img
+      src="https://img.shields.io/badge/Material-12.2.10-blue.svg?style=flat&logo=angular"
+    />
+  </a>
 </div>
 <br />
 
-This project is a REST API developed with Express and Typescript. It is a simple API that allows you to create, read, update and delete users. It also has an authentication system. It uses a MongoDB database to store the data.
+## Project Description
+
+This project is a FullStack application that consists of a backend developed with Express and Typescript, and a frontend developed with Angular 17. The backend provides a simple API that allows users to perform CRUD operations on products, and it also includes an authentication system. The data is stored in a MongoDB database, and the connection to the database is established using Mongoose. The application is deployed on Railway, a platform for hosting web applications.
+
+### Tech Stack
+
+The technologies used in this project include:
+
+- [Express](https://expressjs.com/): A fast and minimalist web application framework for Node.js.
+- [Typescript](https://www.typescriptlang.org/): A statically typed superset of JavaScript that compiles to plain JavaScript.
+- [Angular 17](https://www.angular.dev): A popular framework for building web applications using TypeScript and HTML.
+- [MongoDB](https://www.mongodb.com/): A NoSQL database that provides high performance, scalability, and flexibility.
+- [Mongoose](https://mongoosejs.com/): An Object Data Modeling (ODM) library for MongoDB and Node.js.
+- [Angular Material](https://material.angular.io): A UI component library for Angular that provides a set of reusable and accessible UI components based on Material Design.
 
 ## Features
-- [x] Create, read, update and delete users
+- [x] Create, read, update and delete products
 - [x] Authentication system
 - [x] Database with MongoDB and Mongoose
 - [x] Build with Express and Typescript
-- [x] Deployed in Railway
-
-## Tech Stack
-- [TypeScript](https://www.typescriptlang.org/) 
-- [Express](https://expressjs.com/)
-- [MongoDB](https://www.mongodb.com/)
-- [Mongoose](https://mongoosejs.com/)
-- [Node.js](https://nodejs.org/en/)    
+- [x] Angular frontend 17 - Standalone project
+- [x] Angular material design
 
 ## Getting Started
-This is a blank express server with Typescript. It is ready to be deployed in Railway. You can clone this repository and start your own project.
+This is a blank express server with Typescript. It serve a simple API and a frontend with Angular 17.
+You can clone this repository and start your own project.
 
-First, run the development server:
+First, run the express server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:8080](http://localhost:8080) with your browser to see the result.
-
 Every time you make a change in the code, the server will reload automatically.
+
+Then, run the Angular frontend:
+
+```bash
+cd frontend/angular
+npm run start
+```
+
+The frontend will be available at http://localhost:4200.
 
 ## Demo
 
-You can see a demo of this project in the following link: [https://rest-api-et-production.up.railway.app/](https://rest-api-et-production.up.railway.app/)
+You can see a demo of this project in the following link:
