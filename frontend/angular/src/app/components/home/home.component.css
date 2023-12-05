@@ -1,0 +1,25 @@
+.wrapper {
+  min-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin: auto;
+}
+.card-wrapper {
+  width: 100%;
+  margin-top: 20px;
+}
+.form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+}
+.text-right {
+  text-align: right;
+}
+.description {
+  flex-grow: 1;
+}

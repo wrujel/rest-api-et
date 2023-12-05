@@ -1,0 +1,6 @@
+.spacer {
+  flex: 1 1 auto;
+}
+.activeButton {
+  background: rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,7 @@
+.wrapper mat-card-header mat-card-title {
+  font-size: 30px;
+}
+.wrapper mat-card-header {
+  text-align: center;
+  display: block;
+}

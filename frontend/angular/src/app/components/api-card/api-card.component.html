@@ -1,0 +1,49 @@
+<div class="card-wrapper">
+  <mat-card>
+    <mat-card-header class="card-header">
+      <div class="card-header-left">
+        <mat-card-title>{{ title }}</mat-card-title>
+        <mat-card-subtitle>
+          <code>{{ subtitle }}</code>
+        </mat-card-subtitle>
+      </div>
+      @if (!isDisabled) { @if (showChooser) {
+      <mat-form-field class="card-header-center">
+        <mat-label>Select a Product</mat-label>
+        <mat-select
+          [(value)]="selectedValue"
+          (selectionChange)="select($event)"
+        >
+          @for (item of data; track item) {
+          <mat-option [value]="item">{{ item.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      }
+      <mat-card-actions class="card-buttons card-header-right">
+        @if (showContent && secondaryAction!=="") {
+        <button mat-raised-button color="secondary" (click)="clear()">
+          Clear
+        </button>
+        <mat-divider [vertical]="true"></mat-divider>
+        } @if (primaryAction !== "") {
+        <button mat-raised-button color="primary" (click)="click()">
+          {{ primaryAction }}
+        </button>
+        }
+      </mat-card-actions>
+      }
+    </mat-card-header>
+    @if (showBody && showContent && primaryAction !== "") {
+    <mat-divider></mat-divider>
+    <mat-card-content class="card-content overlay-wrapper">
+      @if(isLoading) {
+      <div class="overlay">
+        <mat-spinner mode="indeterminate" [diameter]="40"></mat-spinner>
+      </div>
+      }
+      <div #ref><ng-content></ng-content></div>
+    </mat-card-content>
+    }
+  </mat-card>
+</div>

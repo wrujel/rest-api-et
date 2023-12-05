@@ -1,0 +1,41 @@
+.card-header {
+  display: grid;
+  grid-template-columns: 220px 2fr 1fr;
+  padding: 20px;
+}
+.card-header-left {
+  grid-column: 1;
+  justify-self: start;
+}
+.card-header-right {
+  grid-column: 3;
+  justify-self: end;
+}
+.card-header-center {
+  grid-column: 2;
+  justify-self: center;
+  max-width: 200px;
+}
+.card-content {
+  max-height: 400px;
+  overflow: auto;
+  padding: 20px !important;
+}
+.card-buttons {
+  gap: 4px;
+}
+.card-loading {
+  margin: auto;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
