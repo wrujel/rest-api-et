@@ -74,7 +74,7 @@
 
 This project is a FullStack application that consists of a backend developed with Express and Typescript, and a frontend developed with Angular 17. The backend provides a simple API that allows users to perform CRUD operations on products, and it also includes an authentication system. The data is stored in a MongoDB database, and the connection to the database is established using Mongoose. The application is deployed on Railway, a platform for hosting web applications.
 
-### Tech Stack
+## Tech Stack
 
 The technologies used in this project include:
 
