@@ -1,6 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IProductForm } from '../models/product';
+import { environment } from '../../environments/environment';
+
+const URL_PATH = environment.url;
 
 @Injectable({
   providedIn: 'root',
@@ -9,17 +12,17 @@ export class CommonService {
   constructor(private http: HttpClient) {}
 
   createProduct(product: IProductForm) {
-    return this.http.post('http://localhost:8080/api/products', product);
+    return this.http.post(`${URL_PATH}/api/products`, product);
   }
 
   getProducts() {
-    return this.http.get('http://localhost:8080/api/products');
+    return this.http.get(`${URL_PATH}/api/products`);
   }
 
   updateProduct(product: IProductForm, id: string) {
     let params = new HttpParams();
     params = params.append('id', id);
-    return this.http.put('http://localhost:8080/api/products', product, {
+    return this.http.put(`${URL_PATH}/api/products`, product, {
       params,
     });
   }
@@ -27,6 +30,6 @@ export class CommonService {
   deleteProduct(id: string) {
     let params = new HttpParams();
     params = params.append('id', id);
-    return this.http.delete('http://localhost:8080/api/products', { params });
+    return this.http.delete(`${URL_PATH}/api/products`, { params });
   }
 }

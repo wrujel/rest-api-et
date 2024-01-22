@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpErrorResponse,
-  HttpHeaderResponse,
   HttpResponse,
 } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, of } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+const URL_PATH = environment.url;
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +25,7 @@ export class AuthService {
     if (!email || !password) return;
     return this.http
       .post<HttpResponse<any>>(
-        'http://localhost:8080/api/auth/login',
+        `${URL_PATH}/api/auth/login`,
         {
           email,
           password,
@@ -57,7 +59,7 @@ export class AuthService {
     if (!username || !email || !password) return;
     return this.http
       .post(
-        'http://localhost:8080/api/auth/register',
+        `${URL_PATH}/api/auth/register`,
         {
           username,
           email,
