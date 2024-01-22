@@ -11,7 +11,7 @@
   </a>
   <a href="/package.json">
     <img 
-      src="https://img.shields.io/badge/Version-1.0.0-blue.svg" 
+      src="https://img.shields.io/badge/Version-2.0.0-blue.svg" 
       alt="Version" 
     />
   </a>
@@ -19,6 +19,12 @@
     <img 
       src="https://img.shields.io/badge/License-MIT-green.svg" 
       alt="License" 
+    />
+  </a>
+  <a href="/">
+    <img 
+      src="https://img.shields.io/badge/Deploy-Running-success.svg" 
+      alt="Deployed" 
     />
   </a>
   <a href="https://www.typescriptlang.org/" target="_blank">
@@ -51,12 +57,6 @@
       alt="Node.js" 
     />
   </a>
-  <a href="https://www.railway.app/" target="_blank">
-    <img 
-      src="https://img.shields.io/badge/Railway-Deployed-success.svg?style=flat&logo=railway" 
-      alt="Deployed in Railway" 
-    />
-  </a>
   <a href="https://www.angular.dev" target="_blank">
     <img
       src="https://img.shields.io/badge/Angular-17.0.0-blue.svg?style=flat&logo=angular"
@@ -72,7 +72,7 @@
 
 ## Project Description
 
-This project is a FullStack application that consists of a backend developed with Express and Typescript, and a frontend developed with Angular 17. The backend provides a simple API that allows users to perform CRUD operations on products, and it also includes an authentication system. The data is stored in a MongoDB database, and the connection to the database is established using Mongoose. The application is deployed on Railway, a platform for hosting web applications.
+This project is a FullStack application that consists of a backend developed with Express and Typescript, and a frontend developed with Angular 17. The backend provides a simple API that allows users to perform CRUD operations on products, and it also includes an authentication system. The data is stored in a MongoDB database, and the connection to the database is established using Mongoose. The application is deployed to try it out here [Demo](#demo)
 
 ## Tech Stack
 
@@ -97,7 +97,14 @@ The technologies used in this project include:
 This is a blank express server with Typescript. It serve a simple API and a frontend with Angular 17.
 You can clone this repository and start your own project.
 
-First, run the express server:
+First, build the Angular frontend:
+
+```bash
+cd frontend/angular
+npm run start
+```
+
+Then, run the express server:
 
 ```bash
 npm run dev
@@ -105,15 +112,10 @@ npm run dev
 
 Every time you make a change in the code, the server will reload automatically.
 
-Then, run the Angular frontend:
-
-```bash
-cd frontend/angular
-npm run start
-```
-
-The frontend will be available at http://localhost:4200.
+The frontend will be available at http://localhost:8080.
 
 ## Demo
 
-You can see a demo of this project in the following link:
+You can see a demo of this project in the following link: 
+
+https://rest-api-et.onrender.com
