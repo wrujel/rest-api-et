@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "ts-node ./src/index.ts",
+    "start-dev": "cd frontend/angular && npm run build:development && cd ../.. && node dist/index.js",
     "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
