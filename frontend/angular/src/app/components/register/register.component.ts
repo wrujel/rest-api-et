@@ -12,7 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -39,22 +39,41 @@ export class RegisterComponent {
   });
   hide = true;
   errorMessage = '';
+  successMessage = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  onSubmit() {
+  onSubmit(e: Event) {
+    e.preventDefault();
     this.errorMessage = '';
-    this.authService
-      .register(
-        this.registerForm.value.username,
-        this.registerForm.value.email,
-        this.registerForm.value.password
-      )
-      ?.subscribe((response: any) => {
-        if (response.status !== 201) {
-          this.errorMessage = 'Invalid username, email, or password.';
-        }
-      });
+    this.successMessage = '';
+    this.registerForm.disable();
+    try {
+      this.authService
+        .register(
+          this.registerForm.value.username,
+          this.registerForm.value.email,
+          this.registerForm.value.password
+        )
+        ?.subscribe((response: any) => {
+          if (response.status !== 201) throw new Error('Invalid response');
+          this.successMessage = 'Account created successfully.';
+          this.registerForm.reset();
+          this.registerForm.setValue({
+            username: '',
+            email: '',
+            password: '',
+          });
+          setTimeout(() => {
+            this.successMessage = '';
+            this.registerForm.enable();
+            this.router.navigate(['/login']);
+          }, 2000);
+        });
+    } catch (error) {
+      this.registerForm.enable();
+      this.errorMessage = 'Invalid username, email, or password.';
+    }
   }
 
   getErrorMessage() {

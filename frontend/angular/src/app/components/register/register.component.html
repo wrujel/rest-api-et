@@ -5,7 +5,7 @@
       <mat-card-title>Register</mat-card-title>
     </mat-card-header>
 
-    <form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit($event)">
       <!-- card content -->
       <mat-card-content>
         <mat-form-field class="full-width">
@@ -43,19 +43,16 @@
 
       <!-- card actions -->
       <mat-card-actions>
-        <button
-          mat-raised-button
-          color="primary"
-          class="btn-block"
-          routerLink="/login"
-        >
+        <button mat-raised-button color="primary" class="btn-block">
           Register
         </button>
       </mat-card-actions>
     </form>
 
     <mat-card-footer>
-      @if (errorMessage) {
+      @if (successMessage) {
+      <div class="success">{{ successMessage }}</div>
+      } @else if (errorMessage) {
       <mat-error>{{ errorMessage }}</mat-error>
       }
     </mat-card-footer>

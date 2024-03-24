@@ -5,3 +5,7 @@
   text-align: center;
   display: block;
 }
+
+.success {
+  color: green;
+}
