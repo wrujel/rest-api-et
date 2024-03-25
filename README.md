@@ -37,7 +37,7 @@
   [Demo](https://rest-api-et.onrender.com) · [Report issue](/issues) · [Suggest something](/issues)
 </div>
 
-### Table of Contents
+## Table of Contents
 - [Tech Stack](#tech-stack)
 - [Features](#features)
 - [Getting Started](#getting-started)
