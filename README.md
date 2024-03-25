@@ -32,7 +32,7 @@
 </div>
 
 <div align='center'>
-  This project is a FullStack application that consists of a backend developed with Express and Typescript, and a frontend developed with Angular 17. The backend provides a simple API that allows users to perform CRUD operations on products, and it also includes an authentication system. The data is stored in a MongoDB database, and the connection to the database is established using Mongoose. The application is deployed to try it out here [Demo](#demo)
+  This project is a FullStack application that consists of a backend developed with Express and Typescript, and a frontend developed with Angular 17. The backend provides a simple API that allows users to perform CRUD operations on products, and it also includes an authentication system. The data is stored in a MongoDB database, and the connection to the database is established using Mongoose.
 
   [Demo](https://rest-api-et.onrender.com) · [Report issue](/issues) · [Suggest something](/issues)
 </div>
