@@ -5,9 +5,9 @@
 
 <div align='center' styles="">
 
+  [![demo][demo]][demo-link]
   [![build][build]](/)
   [![test][tests-passed]](/)
-  [![demo][demo]][demo-link]
 
 </div>
 
@@ -16,7 +16,7 @@
     <img
       src='/public/screenshot.png'
       alt='Screenshot of the app'
-      width='100%'
+      width='60%'
     />
   </a>
 </div>
