@@ -5,9 +5,9 @@
 
 <div align='center' styles="">
 
-  [![demo][demo]][demo-link]
   [![build][build]](/)
   [![test][tests-passed]](/)
+  [![demo][demo]][demo-link]
 
 </div>
 
@@ -44,6 +44,7 @@
 </div>
 
 ## Table of Contents
+- [Table of Contents](#table-of-contents)
 - [Tech Stack](#tech-stack)
 - [Features](#features)
 - [Getting Started](#getting-started)
