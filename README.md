@@ -1,8 +1,13 @@
-<div align='center'>
+[demo-link]: https://rest-api-et.onrender.com
+[demo]: https://img.shields.io/badge/🚀Live%20Demo-000000?style=for-the-badge&&logoColor=white&color=0a6bdb
+[tests-passed]: https://img.shields.io/badge/Test-Passed-success?style=for-the-badge&logo=github&logoColor=white&color=green
+[build]: https://img.shields.io/badge/Build-Passing-success?style=for-the-badge&logo=github&logoColor=white&color=green
 
-  [![Deploy][deploy-active]](/) 
-  [![Tests][tests-passed]](/) 
-  [![Buy me a coffee][buy-me-a-coffee]][buy-me-a-coffee-link]
+<div align='center' styles="">
+
+  [![demo][demo]][demo-link]
+  [![build][build]](/)
+  [![test][tests-passed]](/)
 
 </div>
 
@@ -11,6 +16,7 @@
     <img
       src='/public/screenshot.png'
       alt='Screenshot of the app'
+      width='100%'
     />
   </a>
 </div>
@@ -86,13 +92,12 @@ The frontend will be available at http://localhost:8080.
 
 You can see a demo of this project in the following link: 
 
-https://rest-api-et.onrender.com
+[![Demo][demo]][demo-link]
+
+
 
 
 <!-- Badges -->
-[deploy-active]: https://img.shields.io/badge/Deploy-Active-success?style=for-the-badge&logoColor=white
-[tests-passed]: https://img.shields.io/badge/Test-Passed-success?style=for-the-badge&color=green
-[buy-me-a-coffee]: https://img.shields.io/badge/Buy%20me%20a%20coffee-FF813F?style=for-the-badge&logo=buy-me-a-coffee
 [nextjs]: https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js
 [typescript]: https://img.shields.io/badge/Typescript-007ACC?style=for-the-badge&logo=typescript&logoColor=white&color=blue
 [tailwindcss]: https://img.shields.io/badge/Tailwind%20CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
@@ -120,7 +125,6 @@ https://rest-api-et.onrender.com
 [nodejs]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white
 
 <!-- Badges links -->
-[buy-me-a-coffee-link]: https://www.buymeacoffee.com/wrujel
 [nextjs-link]: https://nextjs.org/
 [typescript-link]: https://www.typescriptlang.org/
 [tailwindcss-link]: https://tailwindcss.com/
