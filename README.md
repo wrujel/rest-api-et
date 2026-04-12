@@ -1,17 +1,7 @@
-[demo]: https://img.shields.io/badge/🚀%20Live%20Demo-000000?style=for-the-badge&&logoColor=white&color=0a6bdb
-[status-link]: https://github.com/wrujel/monitor-repos
-[tests-link]: https://github.com/wrujel/monitor-tests
-
-[demo-link]: https://rest-api-et.onrender.com
-[status]: https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fwrujel%2Fmonitor-repos%2Fmain%2Fdata%2Frest-api-et.json
-[deploy]: https://img.shields.io/github/deployments/wrujel/rest-api-et/production?style=for-the-badge&label=Deploy
-[tests]: https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fwrujel%2Fmonitor-tests%2Fmain%2Fdata%2Frest-api-et.json
-
 <div align='center'>
 
   [![demo][demo]][demo-link]
   [![status][status]][status-link]
-  [![deploy][deploy]](/)
   [![test][tests]][tests-link]
 
 </div>
@@ -21,162 +11,223 @@
     <img
       src='/public/screenshot.png'
       alt='Screenshot of the app'
-      width='70%'
+      width='100%'
     />
   </a>
 </div>
 
-<div align="center">
-  <h1>Full Stack App with Express, Typescript and Angular</h1>
+<div align='center'>
+  <h1>REST API with Express and TypeScript</h1>
 </div>
 
-<div align="center">
+<div align='center'>
 
-  [![Typescript][typescript]][typescript-link]
+  [![TypeScript][typescript]][typescript-link]
   [![Express][express]][express-link]
-  [![Mongodb][mongodb]][mongodb-link]
+  [![Node.js][nodejs]][nodejs-link]
+  [![MongoDB][mongodb]][mongodb-link]
   [![Mongoose][mongoose]][mongoose-link]
   [![Angular][angular]][angular-link]
-  [![Angular-material][angular-material]][angular-material-link]
-  [![Nodejs][nodejs]][nodejs-link]
+  [![Angular Material][angular-material]][angular-material-link]
 
 </div>
 
 <div align='center'>
-  This project is a FullStack application that consists of a backend developed with Express and Typescript, and a frontend developed with Angular 17. The backend provides a simple API that allows users to perform CRUD operations on products, and it also includes an authentication system. The data is stored in a MongoDB database, and the connection to the database is established using Mongoose.
+  REST API built with Express and TypeScript featuring user authentication, product CRUD operations, and an Angular 17 frontend with Angular Material. Uses MongoDB for data persistence.
 
-  [Demo](https://rest-api-et.onrender.com) · [Report issue](/issues) · [Suggest something](/issues)
+  [Demo]({{DEMO_URL}}) · [Report issue](/issues) · [Suggest something](/issues)
 </div>
 
 ## Table of Contents
+
 - [Table of Contents](#table-of-contents)
-- [Tech Stack](#tech-stack)
 - [Features](#features)
+- [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running locally](#running-locally)
+  - [Build](#build)
+- [Environment Variables](#environment-variables)
+- [Project Structure](#project-structure)
 - [Demo](#demo)
-
-## Tech Stack
-The technologies used in this project include:
-
-- [Express](https://expressjs.com/): A fast and minimalist web application framework for Node.js.
-- [Typescript](https://www.typescriptlang.org/): A statically typed superset of JavaScript that compiles to plain JavaScript.
-- [Angular 17](https://www.angular.dev): A popular framework for building web applications using TypeScript and HTML.
-- [MongoDB](https://www.mongodb.com/): A NoSQL database that provides high performance, scalability, and flexibility.
-- [Mongoose](https://mongoosejs.com/): An Object Data Modeling (ODM) library for MongoDB and Node.js.
-- [Angular Material](https://material.angular.io): A UI component library for Angular that provides a set of reusable and accessible UI components based on Material Design.
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
-- [x] Create, read, update and delete products
-- [x] Authentication system
-- [x] Database with MongoDB and Mongoose
-- [x] Build with Express and Typescript
-- [x] Angular frontend 17 - Standalone project
-- [x] Angular material design
+
+- [x] User registration and login with session token authentication
+- [x] Password hashing with HMAC SHA-256 and random salt
+- [x] Session token stored in cookies for authentication
+- [x] CRUD operations for products (create, read, update, delete)
+- [x] CRUD operations for users (read, update, delete)
+- [x] Ownership middleware to protect product modifications
+- [x] Authentication middleware for protected routes
+- [x] Angular 17 standalone frontend with Angular Material UI
+- [x] Auth guard and HTTP interceptor for frontend authentication
+- [x] Reactive forms for product management
+- [x] MongoDB with Mongoose ODM
+- [x] TypeScript on both backend and frontend
+- [x] Hot reload with Nodemon during development
+
+## Tech Stack
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [Express](https://expressjs.com/)
+- [Node.js](https://nodejs.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [Mongoose](https://mongoosejs.com/)
+- [Angular 17](https://angular.io/)
+- [Angular Material](https://material.angular.io/)
+- [Lodash](https://lodash.com/)
+- [Dotenv](https://www.npmjs.com/package/dotenv)
 
 ## Getting Started
-This is a blank express server with Typescript. It serve a simple API and a frontend with Angular 17.
-You can clone this repository and start your own project.
 
-First, build the Angular frontend:
+### Prerequisites
+
+- Node.js 18+
+- npm
+- A MongoDB instance (local or MongoDB Atlas)
+
+### Installation
 
 ```bash
+git clone https://github.com/wrujel/rest-api-et.git
+cd rest-api-et
+npm install
 cd frontend/angular
-npm run start
+npm install
+cd ../..
 ```
 
-Then, run the express server:
+### Running locally
 
 ```bash
 npm run dev
 ```
 
-Every time you make a change in the code, the server will reload automatically.
+Open [http://localhost:8080](http://localhost:8080) with your browser to see the result.
 
-The frontend will be available at http://localhost:8080.
+### Build
+
+```bash
+npm run build
+```
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your `.env` file.
+
+| Variable              | Description                                                                          | Required |
+| :-------------------- | :----------------------------------------------------------------------------------- | :------: |
+| `MONGO_URL`           | MongoDB connection string                                                            |   Yes    |
+| `SECRET`              | Secret key used for HMAC password hashing                                            |   Yes    |
+| `PORT`                | Server port (defaults to 8080)                                                       |    No    |
+| `FRONTEND_BUILD_PATH` | Path to the Angular frontend build output                                            |    No    |
+| `ENVIRONMENT`         | Set to `development` to enable session token in login response and header-based auth |    No    |
+
+## Project Structure
+
+```
+/
+├── public/
+│   └── screenshot.png
+├── src/
+│   ├── controllers/
+│   │   ├── authentication.ts
+│   │   ├── products.ts
+│   │   └── users.ts
+│   ├── db/
+│   │   ├── product.ts
+│   │   └── users.ts
+│   ├── helpers/
+│   │   └── index.ts
+│   ├── middlewares/
+│   │   └── index.ts
+│   ├── router/
+│   │   ├── authentication.ts
+│   │   ├── index.ts
+│   │   ├── products.ts
+│   │   └── users.ts
+│   └── index.ts
+├── frontend/
+│   └── angular/
+│       └── src/
+│           └── app/
+│               ├── components/
+│               │   ├── api-card/
+│               │   ├── home/
+│               │   ├── login/
+│               │   ├── navbar/
+│               │   └── register/
+│               ├── models/
+│               ├── services/
+│               └── app.routes.ts
+├── package.json
+├── tsconfig.json
+└── nodemon.json
+```
 
 ## Demo
 
-You can see a demo of this project in the following link: 
+You can check out the demo:
 
 [![Demo][demo]][demo-link]
 
+## API Reference
 
+| Method   | Endpoint             | Description                           | Auth Required |
+| :------- | :------------------- | :------------------------------------ | :-----------: |
+| `POST`   | `/api/auth/register` | Register a new user                   |      No       |
+| `POST`   | `/api/auth/login`    | Login and get session token           |      No       |
+| `GET`    | `/api/users`         | List all users                        |      Yes      |
+| `DELETE` | `/api/users/:id`     | Delete a user by ID                   |  Yes (Owner)  |
+| `PATCH`  | `/api/users/:id`     | Update a user's username              |  Yes (Owner)  |
+| `GET`    | `/api/products`      | List all products                     |      Yes      |
+| `POST`   | `/api/products`      | Create a new product                  |      Yes      |
+| `PUT`    | `/api/products`      | Update a product (id via query param) |  Yes (Owner)  |
+| `DELETE` | `/api/products`      | Delete a product (id via query param) |  Yes (Owner)  |
 
+## Contributing
+
+Contributions are welcome! If you have suggestions or find bugs, please open an issue or submit a pull request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
 
 <!-- Badges -->
-[nextjs]: https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js
 [typescript]: https://img.shields.io/badge/Typescript-007ACC?style=for-the-badge&logo=typescript&logoColor=white&color=blue
-[tailwindcss]: https://img.shields.io/badge/Tailwind%20CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
-[react]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[lodash]: https://img.shields.io/badge/Lodash-gray?style=for-the-badge&logo=lodash
-[next-auth]: https://img.shields.io/badge/Next--Auth-black?style=for-the-badge&logo=next.js
-[prisma]: https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white
-[axios]: https://img.shields.io/badge/Axios-56A7F7?style=for-the-badge&logo=axios&logoColor=white
-[react-icons]: https://img.shields.io/badge/React--Icons-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[swr]: https://img.shields.io/badge/SWR-black?style=for-the-badge&logo=next.js
-[zustand]: https://img.shields.io/badge/Zustand-gray?style=for-the-badge&logo=npm
-[react-player]: https://img.shields.io/badge/React--Player-gray?style=for-the-badge&logo=npm
-[mongodb]: https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white
-[vercel]: https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white
-[html]: https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white
-[css]: https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white
-[javascript]: https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E
-[netlify]: https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white
-[vite]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white
-[astro]: https://img.shields.io/badge/Astro-0C1222?style=for-the-badge&logo=astro&logoColor=FDFDFE
 [express]: https://img.shields.io/badge/Express%20js-000000?style=for-the-badge&logo=express&logoColor=white
-[mongoose]: https://img.shields.io/badge/Mongoose-gray?style=for-the-badge&logo=mongoose&logoColor=white
+[nodejs]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white
+[mongodb]: https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white
+[mongoose]: https://img.shields.io/badge/Mongoose-2A2A2A?style=for-the-badge&logo=mongoose&logoColor=white
 [angular]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
 [angular-material]: https://img.shields.io/badge/Angular%20Material-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[nodejs]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white
-[netsjs]: https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white
-[swagger]: https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=white
-[jest]: https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white
-[react-hot-toast]: https://img.shields.io/badge/React--Hot--Toast-gray?style=for-the-badge&logo=react-hot-toast&logoColor=white
-[github-api]: https://img.shields.io/badge/Github%20API-181717?style=for-the-badge&logo=github&logoColor=white
-[date-fns]: https://img.shields.io/badge/Date--fns-F7841B?style=for-the-badge&logo=date-fns&logoColor=white
-[django]: https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green
-[django-rest-framework]: https://img.shields.io/badge/django%20rest-ff1709?style=for-the-badge&logo=django&logoColor=white
-[coreapi]: https://img.shields.io/badge/Coreapi-gray.svg?style=for-the-badge&logo=coreapi
-[bcrypt]: https://img.shields.io/badge/Bcrypt-2A2A2A?style=for-the-badge&logo=npm&logoColor=white
-[recharts]: https://img.shields.io/badge/Recharts-61DAFB?style=for-the-badge&logo=javascript&logoColor=white
-[use-debounce]: https://img.shields.io/badge/Use--Debounce-gray?style=for-the-badge&logo=npm&logoColor=white
-[framer-motion]: https://img.shields.io/badge/Framer%20Motion-gray?style=for-the-badge&logo=npm&logoColor=white
-[tsparticles]: https://img.shields.io/badge/Tsparticles-gray?style=for-the-badge&logo=npm&logoColor=white
-[swiper]: https://img.shields.io/badge/Swiper-6332D2?style=for-the-badge&logo=swiper&logoColor=white
-[react-countup]: https://img.shields.io/badge/React%20Countup-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[cloudinary]: https://img.shields.io/badge/Cloudinary-4285F4?style=for-the-badge&logo=cloudinary&logoColor=white
-[query-string]: https://img.shields.io/badge/Query%20String-gray?style=for-the-badge&logo=npm&logoColor=white
-[react-date-range]: https://img.shields.io/badge/React%20Date%20Range-gray?style=for-the-badge&logo=npm&logoColor=white
-[react-hook-form]: https://img.shields.io/badge/React%20Hook%20Form-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[react-spinners]: https://img.shields.io/badge/React%20spinners-gray?style=for-the-badge&logo=npm&logoColor=white
-[world-countries-data]: https://img.shields.io/badge/World%20countries%20data-gray?style=for-the-badge&logo=npm&logoColor=white
-[react-leaflet]: https://img.shields.io/badge/React%20Leaflet-gray?style=for-the-badge&logo=npm&logoColor=white
-[react-select]: https://img.shields.io/badge/React%20Select-gray?style=for-the-badge&logo=npm&logoColor=white
 
-<!-- Badges links -->
-[nextjs-link]: https://nextjs.org/
+<!-- Badge links -->
 [typescript-link]: https://www.typescriptlang.org/
-[tailwindcss-link]: https://tailwindcss.com/
-[react-link]: https://reactjs.org/
-[lodash-link]: https://lodash.com/
-[next-auth-link]: https://next-auth.js.org/
-[prisma-link]: https://www.prisma.io/
-[axios-link]: https://axios-http.com/
-[react-icons-link]: https://react-icons.github.io/react-icons/
-[swr-link]: https://swr.vercel.app/
-[zustand-link]: https://zustand.surge.sh/
-[react-player-link]: https://www.npmjs.com/package/react-player
-[mongodb-link]: https://www.mongodb.com/
-[vercel-link]: https://vercel.com/
-[html-link]: https://developer.mozilla.org/en-US/docs/Web/HTML
-[css-link]: https://developer.mozilla.org/en-US/docs/Web/CSS
-[javascript-link]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
-[netlify-link]: https://www.netlify.com/
-[vite-link]: https://vitejs.dev/
-[astro-link]: https://astro.build/
 [express-link]: https://expressjs.com/
+[nodejs-link]: https://nodejs.org/
+[mongodb-link]: https://www.mongodb.com/
 [mongoose-link]: https://mongoosejs.com/
-[angular-link]: https://angular.io/
-[angular-material-link]: https://material.angular.io/
-[nodejs-link]: https://nodejs.org/en/
+[angular-link]: https://angular.dev/
+[angular-material-link]: https://material.angular.dev/
+
+<!-- Status badges -->
+[demo]: https://img.shields.io/badge/🚀%20Live%20Demo-Click%20Here-blue?style=for-the-badge
+[demo-link]: https://rest-api-et.onrender.com
+[status]: https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fwrujel%2Fmonitor-repos%2Fmain%2Fdata%2Frest-api-et.json
+[status-link]: https://github.com/wrujel/monitor-repos
+[tests]: https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fwrujel%2Fmonitor-tests%2Fmain%2Fdata%2Frest-api-et.json
+[tests-link]: https://github.com/wrujel/monitor-tests
