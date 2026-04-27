@@ -25,7 +25,7 @@
     class="theme-toggle"
     [matTooltip]="themeLabel()"
     matTooltipPosition="below"
-    (click)="cycleTheme()"
+    (click)="toggleTheme()"
     [attr.aria-label]="themeLabel()"
   >
     <mat-icon>{{ themeIcon() }}</mat-icon>

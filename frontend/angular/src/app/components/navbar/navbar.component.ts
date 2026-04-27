@@ -5,19 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../services/auth.service';
-import { ThemeService, ThemeChoice } from '../../services/theme.service';
-
-const THEME_LABELS: Record<ThemeChoice, string> = {
-  auto: 'Auto theme (matches system)',
-  light: 'Light theme',
-  dark: 'Dark theme',
-};
-
-const THEME_ICONS: Record<ThemeChoice, string> = {
-  auto: 'brightness_auto',
-  light: 'light_mode',
-  dark: 'dark_mode',
-};
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-navbar',
@@ -31,11 +19,13 @@ export class NavbarComponent {
   readonly theme = inject(ThemeService);
   private readonly router = inject(Router);
 
-  readonly themeIcon = computed(() => THEME_ICONS[this.theme.choice()]);
-  readonly themeLabel = computed(() => THEME_LABELS[this.theme.choice()]);
+  readonly themeIcon = computed(() => (this.theme.choice() === 'dark' ? 'light_mode' : 'dark_mode'));
+  readonly themeLabel = computed(() =>
+    this.theme.choice() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme',
+  );
 
-  cycleTheme() {
-    this.theme.cycle();
+  toggleTheme() {
+    this.theme.toggle();
   }
 
   logout() {

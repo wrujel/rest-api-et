@@ -1,14 +1,16 @@
 @mixin auth-layout {
   :host {
     display: block;
-    min-height: calc(100vh - 64px);
+    height: 100%;
+    overflow: hidden;
   }
 
   .auth-shell {
     display: grid;
     grid-template-columns: 1fr;
-    min-height: calc(100vh - 64px);
+    height: 100%;
     background: var(--mat-sys-surface);
+    overflow: hidden;
   }
 
   @media (min-width: 960px) {
@@ -23,8 +25,7 @@
       clamp(var(--app-space-5), 7vw, var(--app-space-8));
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: var(--app-space-5);
+    overflow-y: auto;
     background:
       radial-gradient(120% 80% at 100% 0%, color-mix(in oklch, var(--mat-sys-primary) 9%, transparent) 0%, transparent 60%),
       linear-gradient(180deg, color-mix(in oklch, var(--mat-sys-surface) 95%, transparent) 0%, var(--mat-sys-surface) 100%);
@@ -49,7 +50,7 @@
   .auth-pane-inner {
     width: 100%;
     max-width: 440px;
-    margin: 0 auto;
+    margin: auto;
     display: flex;
     flex-direction: column;
     gap: var(--app-space-4);

@@ -29,7 +29,6 @@
   --auth-hero-curve: rgba(220, 236, 255, 0.36);
   --auth-hero-vignette-1: rgba(0, 0, 0, 0);
   --auth-hero-vignette-2: rgba(0, 0, 0, 0.45);
-  --auth-hero-mark: rgba(255, 255, 255, 0.78);
 }
 
 :host-context(html.theme-light) {
@@ -57,7 +56,6 @@
   --auth-hero-curve: rgba(36, 60, 96, 0.42);
   --auth-hero-vignette-1: rgba(255, 255, 255, 0);
   --auth-hero-vignette-2: rgba(255, 255, 255, 0.18);
-  --auth-hero-mark: rgba(20, 30, 48, 0.78);
 }
 
 .auth-hero {
@@ -78,13 +76,3 @@
   display: block;
 }
 
-.auth-hero-mark {
-  position: absolute;
-  bottom: clamp(24px, 4vw, 40px);
-  right: clamp(24px, 4vw, 40px);
-  color: var(--auth-hero-mark);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
