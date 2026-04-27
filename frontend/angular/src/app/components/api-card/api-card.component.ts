@@ -7,18 +7,17 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-  selector: 'app-api-card',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-  ],
-  templateUrl: './api-card.component.html',
-  styleUrl: './api-card.component.css',
+    selector: 'app-api-card',
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+    ],
+    templateUrl: './api-card.component.html',
+    styleUrl: './api-card.component.css'
 })
 export class ApiCardComponent {
   @Input() data: any[] = [];
