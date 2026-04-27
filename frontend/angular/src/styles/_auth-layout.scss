@@ -1,14 +1,17 @@
 @mixin auth-layout {
   :host {
-    display: block;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow: hidden;
   }
 
   .auth-shell {
     display: grid;
     grid-template-columns: 1fr;
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
     background: var(--mat-sys-surface);
     overflow: hidden;
   }
