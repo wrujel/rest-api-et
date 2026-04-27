@@ -1,0 +1,41 @@
+%glass-surface {
+  background: var(--app-glass-fill);
+  border: 1px solid var(--app-glass-stroke);
+  border-radius: var(--app-radius-lg);
+  box-shadow: var(--app-elevation-2);
+  backdrop-filter: blur(var(--app-blur-md)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--app-blur-md)) saturate(150%);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+%glass-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    var(--app-glass-highlight) 0%,
+    transparent 38%,
+    transparent 62%,
+    color-mix(in oklch, var(--mat-sys-primary) 12%, transparent) 100%
+  );
+  opacity: 0.55;
+  z-index: -1;
+}
+
+%glass-bar {
+  background: color-mix(in oklch, var(--mat-sys-surface) 65%, transparent);
+  border-bottom: 1px solid var(--app-glass-stroke);
+  backdrop-filter: blur(var(--app-blur-md)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--app-blur-md)) saturate(160%);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  %glass-surface,
+  %glass-bar {
+    background: var(--mat-sys-surface-container);
+  }
+}

@@ -1,0 +1,93 @@
+@use '@angular/material' as mat;
+@use './styles/tokens';
+@use './styles/glass';
+@use './styles/mesh';
+
+html {
+  color-scheme: light dark;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$violet-palette,
+      tertiary: mat.$magenta-palette,
+    ),
+    typography: (
+      plain-family: ('Inter', 'Helvetica Neue', sans-serif),
+      brand-family: ('Space Grotesk', 'Inter', sans-serif),
+      bold-weight: 700,
+      medium-weight: 500,
+      regular-weight: 400,
+    ),
+    density: 0,
+  ));
+}
+
+html.theme-light { color-scheme: light; }
+html.theme-dark  { color-scheme: dark;  }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  transition: color var(--app-motion-fast) var(--app-motion-ease);
+}
+a:hover { color: var(--mat-sys-tertiary); }
+
+::selection {
+  background: color-mix(in oklch, var(--mat-sys-primary) 35%, transparent);
+  color: var(--mat-sys-on-primary-container);
+}
+
+/* Material Symbols variable-font setup */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  font-feature-settings: 'liga';
+}
+
+.app-glass {
+  @extend %glass-surface;
+}
+.app-glass-bar {
+  @extend %glass-bar;
+}
+
+/* Backdrop blur for Material dialogs */
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  background: color-mix(in oklch, var(--mat-sys-scrim) 35%, transparent);
+}
+
+/* Focus rings tied to theme primary */
+:where(button, a, [tabindex]):focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 3px;
+  border-radius: var(--app-radius-xs);
+}
+
+/* Friendly snackbar tweak */
+.mat-mdc-snack-bar-container.app-snackbar-error {
+  --mdc-snackbar-container-color: var(--mat-sys-error-container);
+  --mdc-snackbar-supporting-text-color: var(--mat-sys-on-error-container);
+}
+.mat-mdc-snack-bar-container.app-snackbar-success {
+  --mdc-snackbar-container-color: var(--mat-sys-tertiary-container);
+  --mdc-snackbar-supporting-text-color: var(--mat-sys-on-tertiary-container);
+}
