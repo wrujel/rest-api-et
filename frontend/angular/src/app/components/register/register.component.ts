@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../services/auth.service';
+import { AuthHeroComponent } from '../auth-hero/auth-hero.component';
 
 interface PasswordStrength {
   score: 0 | 1 | 2 | 3 | 4;
@@ -30,6 +31,7 @@ const STRENGTH_LABELS = ['too short', 'weak', 'okay', 'good', 'strong'] as const
     MatInputModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
+    AuthHeroComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',

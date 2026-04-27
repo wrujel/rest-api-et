@@ -1,123 +1,116 @@
 <section class="auth-shell">
-  <aside class="auth-marketing" aria-hidden="true">
-    <div>
-      <span class="auth-eyebrow">Join us</span>
-      <h1 class="auth-headline">Create your workspace.</h1>
-      <p class="auth-sub">
-        It takes a minute. Spin up your account and start building your catalog.
+  <div class="auth-pane">
+    <div class="auth-pane-inner">
+      <span class="auth-eyebrow">Start for free</span>
+      <h1 class="auth-headline">
+        Create new account<span class="auth-headline-dot">.</span>
+      </h1>
+      <p class="auth-aside-inline">
+        Already a member? <a routerLink="/login">Sign in</a>
       </p>
-    </div>
 
-    <ul class="auth-feature-list">
-      <li><mat-icon>rocket_launch</mat-icon><span>Up and running instantly</span></li>
-      <li><mat-icon>encrypted</mat-icon><span>Your data stays yours</span></li>
-      <li><mat-icon>auto_awesome</mat-icon><span>Polished, friendly UI</span></li>
-    </ul>
-  </aside>
-
-  <div class="auth-card">
-    <header class="auth-card-header">
-      <h2 class="auth-card-title">Create account</h2>
-      <p class="auth-card-subtitle">A few details and you're in.</p>
-    </header>
-
-    @if (bannerError()) {
-      <div class="auth-banner is-error" role="alert">
-        <mat-icon aria-hidden="true">error</mat-icon>
-        <span>{{ bannerError() }}</span>
-      </div>
-    }
-    @if (successMessage()) {
-      <div class="auth-banner is-success" role="status">
-        <mat-icon aria-hidden="true">check_circle</mat-icon>
-        <span>{{ successMessage() }}</span>
-      </div>
-    }
-
-    <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-      <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input
-          matInput
-          type="text"
-          autocomplete="username"
-          formControlName="username"
-          required
-        />
-        <mat-icon matPrefix>person</mat-icon>
-        @if (usernameErrorMessage()) {
-          <mat-error>{{ usernameErrorMessage() }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input
-          matInput
-          type="email"
-          autocomplete="email"
-          formControlName="email"
-          required
-        />
-        <mat-icon matPrefix>mail</mat-icon>
-        @if (emailErrorMessage()) {
-          <mat-error>{{ emailErrorMessage() }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          [type]="hidePassword() ? 'password' : 'text'"
-          autocomplete="new-password"
-          formControlName="password"
-          required
-        />
-        <mat-icon matPrefix>lock</mat-icon>
-        <button
-          type="button"
-          mat-icon-button
-          matSuffix
-          (click)="togglePassword()"
-          [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
-        >
-          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
-        </button>
-        <mat-hint>Use at least 8 characters with letters and numbers.</mat-hint>
-        @if (passwordErrorMessage()) {
-          <mat-error>{{ passwordErrorMessage() }}</mat-error>
-        }
-      </mat-form-field>
-
-      @if (strength().score > 0) {
-        <div class="password-meter" [attr.data-strength]="strength().score">
-          <mat-progress-bar mode="determinate" [value]="strength().percent"></mat-progress-bar>
-          <div class="password-meter-label">
-            <span>Password strength</span>
-            <strong>{{ strength().label }}</strong>
-          </div>
+      @if (bannerError()) {
+        <div class="auth-banner is-error" role="alert">
+          <mat-icon aria-hidden="true">error</mat-icon>
+          <span>{{ bannerError() }}</span>
+        </div>
+      }
+      @if (successMessage()) {
+        <div class="auth-banner is-success" role="status">
+          <mat-icon aria-hidden="true">check_circle</mat-icon>
+          <span>{{ successMessage() }}</span>
         </div>
       }
 
-      <button
-        mat-flat-button
-        color="primary"
-        class="auth-submit"
-        type="submit"
-        [disabled]="submitting() || successMessage() !== null"
-      >
-        @if (submitting()) {
-          <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
-          <span>Creating&hellip;</span>
-        } @else {
-          <span>Create account</span>
-        }
-      </button>
-    </form>
+      <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <mat-form-field appearance="fill">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            type="text"
+            autocomplete="username"
+            formControlName="username"
+            required
+          />
+          <mat-icon matSuffix>badge</mat-icon>
+          @if (usernameErrorMessage()) {
+            <mat-error>{{ usernameErrorMessage() }}</mat-error>
+          }
+        </mat-form-field>
 
-    <p class="auth-aside">
-      Already have an account? <a routerLink="/login">Sign in</a>
-    </p>
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            autocomplete="email"
+            formControlName="email"
+            required
+          />
+          <mat-icon matSuffix>mail</mat-icon>
+          @if (emailErrorMessage()) {
+            <mat-error>{{ emailErrorMessage() }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            autocomplete="new-password"
+            formControlName="password"
+            required
+          />
+          <button
+            type="button"
+            mat-icon-button
+            matSuffix
+            (click)="togglePassword()"
+            [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          <mat-hint>At least 8 characters with letters and numbers.</mat-hint>
+          @if (passwordErrorMessage()) {
+            <mat-error>{{ passwordErrorMessage() }}</mat-error>
+          }
+        </mat-form-field>
+
+        @if (strength().score > 0) {
+          <div class="password-meter" [attr.data-strength]="strength().score">
+            <mat-progress-bar mode="determinate" [value]="strength().percent"></mat-progress-bar>
+            <div class="password-meter-label">
+              <span>Password strength</span>
+              <strong>{{ strength().label }}</strong>
+            </div>
+          </div>
+        }
+
+        <div class="auth-actions">
+          <a mat-stroked-button class="auth-secondary" routerLink="/login">
+            I have an account
+          </a>
+          <button
+            mat-flat-button
+            color="primary"
+            class="auth-submit"
+            type="submit"
+            [disabled]="submitting() || successMessage() !== null"
+          >
+            @if (submitting()) {
+              <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
+              <span>Creating&hellip;</span>
+            } @else {
+              <span>Create account</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="auth-hero-pane">
+    <app-auth-hero></app-auth-hero>
   </div>
 </section>

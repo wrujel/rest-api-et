@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+.auth-hero {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background: #0a0e16;
+}
+
+.auth-hero-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.auth-hero-mark {
+  position: absolute;
+  bottom: clamp(24px, 4vw, 40px);
+  right: clamp(24px, 4vw, 40px);
+  color: rgba(255, 255, 255, 0.78);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}

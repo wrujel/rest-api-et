@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../services/auth.service';
+import { AuthHeroComponent } from '../auth-hero/auth-hero.component';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ import { AuthService } from '../../services/auth.service';
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    AuthHeroComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',

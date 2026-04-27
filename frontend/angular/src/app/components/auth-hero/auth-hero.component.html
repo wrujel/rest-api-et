@@ -1,0 +1,69 @@
+<div class="auth-hero" aria-hidden="true">
+  <svg class="auth-hero-art" viewBox="0 0 800 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="auth-hero-sky" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#1a2538" />
+        <stop offset="55%" stop-color="#0f1622" />
+        <stop offset="100%" stop-color="#070a11" />
+      </linearGradient>
+      <radialGradient id="auth-hero-glow" cx="62%" cy="38%" r="55%">
+        <stop offset="0%" stop-color="rgba(120, 180, 230, 0.22)" />
+        <stop offset="100%" stop-color="rgba(120, 180, 230, 0)" />
+      </radialGradient>
+      <linearGradient id="auth-hero-haze" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="rgba(150, 180, 220, 0)" />
+        <stop offset="60%" stop-color="rgba(150, 180, 220, 0.10)" />
+        <stop offset="100%" stop-color="rgba(150, 180, 220, 0)" />
+      </linearGradient>
+    </defs>
+
+    <rect width="800" height="1000" fill="url(#auth-hero-sky)" />
+    <rect width="800" height="1000" fill="url(#auth-hero-glow)" />
+
+    <!-- Atmospheric haze band -->
+    <rect x="0" y="540" width="800" height="180" fill="url(#auth-hero-haze)" />
+
+    <!-- Far ridge -->
+    <path
+      d="M0,560 L80,500 L160,540 L240,470 L340,520 L460,460 L560,500 L660,440 L760,500 L800,480 L800,1000 L0,1000 Z"
+      fill="rgba(78, 100, 132, 0.45)" />
+
+    <!-- Mid ridge -->
+    <path
+      d="M0,660 L60,580 L150,640 L240,560 L340,620 L440,540 L560,610 L680,540 L780,600 L800,580 L800,1000 L0,1000 Z"
+      fill="rgba(40, 56, 80, 0.85)" />
+
+    <!-- Front ridge -->
+    <path
+      d="M0,790 L70,700 L160,760 L260,660 L380,740 L500,650 L620,740 L740,670 L800,710 L800,1000 L0,1000 Z"
+      fill="rgba(12, 18, 28, 0.96)" />
+
+    <!-- Pine silhouettes on the right edge -->
+    <g fill="rgba(6, 9, 15, 1)">
+      <path
+        d="M730,560 l9,18 l-7,0 l11,22 l-9,0 l13,28 l-11,0 l14,32 l-29,0 l14,-32 l-11,0 l13,-28 l-9,0 l11,-22 l-7,0 z" />
+      <path
+        d="M770,610 l8,16 l-6,0 l10,20 l-8,0 l12,26 l-10,0 l13,30 l-26,0 l13,-30 l-10,0 l12,-26 l-8,0 l10,-20 l-6,0 z" />
+      <path
+        d="M695,640 l9,18 l-7,0 l11,22 l-9,0 l13,28 l-11,0 l14,32 l-29,0 l14,-32 l-11,0 l13,-28 l-9,0 l11,-22 l-7,0 z" />
+      <path
+        d="M755,720 l8,16 l-6,0 l10,20 l-8,0 l12,26 l-10,0 l13,30 l-26,0 l13,-30 l-10,0 l12,-26 l-8,0 l10,-20 l-6,0 z" />
+    </g>
+
+    <!-- Dotted curve traversing the scene -->
+    <path
+      d="M180,80 C 320,200 240,400 380,520 S 520,820 240,960"
+      fill="none"
+      stroke="rgba(220, 236, 255, 0.32)"
+      stroke-width="2"
+      stroke-dasharray="2 9"
+      stroke-linecap="round" />
+  </svg>
+
+  <span class="auth-hero-mark">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor">
+      <path d="M5 26 L16 4 L27 26 L23.5 26 L21.4 21.5 L10.6 21.5 L8.5 26 Z M16 11 L12 19 L20 19 Z" />
+      <circle cx="22" cy="24.5" r="1.6" />
+    </svg>
+  </span>
+</div>
