@@ -8,8 +8,8 @@ html {
 
   @include mat.theme((
     color: (
-      primary: mat.$red-palette,
-      tertiary: mat.$violet-palette,
+      primary: mat.$azure-palette,
+      tertiary: mat.$cyan-palette,
     ),
     typography: (
       plain-family: ('Inter', 'Helvetica Neue', sans-serif),
