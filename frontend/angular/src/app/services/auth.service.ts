@@ -1,77 +1,101 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { BehaviorSubject, catchError, map, of } from 'rxjs';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 const URL_PATH = environment.url;
+const TOKEN_KEY = 'sessionToken';
+const EMAIL_KEY = 'sessionEmail';
 
-@Injectable({
-  providedIn: 'root',
-})
+interface LoginBody {
+  sessionToken?: string;
+  email?: string;
+}
+
+interface RegisterBody {
+  message?: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _isLoggedIn$ = new BehaviorSubject<boolean>(false);
-  isLoggedIn$ = this._isLoggedIn$.asObservable();
+  private readonly http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {
-    const token = localStorage.getItem('sessionToken');
-    this._isLoggedIn$.next(!!token);
-  }
+  private readonly _isLoggedIn$ = new BehaviorSubject<boolean>(this.hasToken());
+  readonly isLoggedIn$ = this._isLoggedIn$.asObservable();
 
-  login(email?: string | null, password?: string | null) {
-    if (!email || !password) return;
+  readonly userEmail = signal<string | null>(this.readStorage(EMAIL_KEY));
+  readonly isLoggedIn = signal<boolean>(this.hasToken());
+  readonly initial = computed(() => {
+    const e = this.userEmail();
+    return e ? e.trim().charAt(0).toUpperCase() : '?';
+  });
+
+  login(email: string, password: string): Observable<HttpResponse<LoginBody>> {
     return this.http
-      .post<HttpResponse<any>>(
+      .post<LoginBody>(
         `${URL_PATH}/api/auth/login`,
-        {
-          email,
-          password,
-        },
-        { observe: 'response' }
+        { email, password },
+        { observe: 'response' },
       )
       .pipe(
-        map((response: HttpResponse<any>) => {
-          const token = response.body.sessionToken;
-          if (!token) return response;
-          this._isLoggedIn$.next(true);
-          localStorage.setItem('sessionToken', token);
-          return response;
+        tap((response) => {
+          const token = response.body?.sessionToken;
+          if (token) {
+            this.writeStorage(TOKEN_KEY, token);
+            this.writeStorage(EMAIL_KEY, email);
+            this.userEmail.set(email);
+            this._isLoggedIn$.next(true);
+            this.isLoggedIn.set(true);
+          }
         }),
-        catchError((error: HttpErrorResponse) => {
-          return of(error);
-        })
       );
+  }
+
+  register(username: string, email: string, password: string): Observable<HttpResponse<RegisterBody>> {
+    return this.http.post<RegisterBody>(
+      `${URL_PATH}/api/auth/register`,
+      { username, email, password },
+      { observe: 'response' },
+    );
   }
 
   logout() {
+    this.removeStorage(TOKEN_KEY);
+    this.removeStorage(EMAIL_KEY);
+    this.userEmail.set(null);
     this._isLoggedIn$.next(false);
-    localStorage.removeItem('sessionToken');
+    this.isLoggedIn.set(false);
   }
 
-  register(
-    username?: string | null,
-    email?: string | null,
-    password?: string | null
-  ) {
-    if (!username || !email || !password) return;
-    return this.http
-      .post(
-        `${URL_PATH}/api/auth/register`,
-        {
-          username,
-          email,
-          password,
-        },
-        {
-          observe: 'response',
-        }
-      )
-      .pipe(
-        map((response: HttpResponse<any>) => {
-          return response;
-        }),
-        catchError((error: HttpErrorResponse) => {
-          return of(error);
-        })
-      );
+  getToken(): string | null {
+    return this.readStorage(TOKEN_KEY);
+  }
+
+  private hasToken(): boolean {
+    return !!this.readStorage(TOKEN_KEY);
+  }
+
+  private readStorage(key: string): string | null {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  private writeStorage(key: string, value: string) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      /* sandboxed or quota exhausted */
+    }
+  }
+
+  private removeStorage(key: string) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
   }
 }

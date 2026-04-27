@@ -1,2 +1,5 @@
+<div class="app-mesh-bg" aria-hidden="true"></div>
 <app-navbar></app-navbar>
-<router-outlet></router-outlet>
+<main class="app-route-host" [@routeFade]="getRouteAnimationKey()">
+  <router-outlet></router-outlet>
+</main>

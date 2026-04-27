@@ -1,63 +1,86 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import {
-  FormGroup,
-  FormControl,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-login',
-    imports: [
-        CommonModule,
-        MatCardModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatInputModule,
-        MatIconModule,
-    ],
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.css'
+  selector: 'app-login',
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.required),
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
+  readonly hidePassword = signal(true);
+  readonly submitting = signal(false);
+  readonly bannerError = signal<string | null>(null);
+
+  readonly form = new FormGroup({
+    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
+    password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(6)] }),
   });
-  hide = true;
-  errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
-
-  onSubmit() {
-    this.errorMessage = '';
-    this.authService
-      .login(this.loginForm.value.email, this.loginForm.value.password)
-      ?.subscribe((response: any) => {
-        if (response.status !== 200) {
-          this.errorMessage = 'Invalid email or password.';
-        }
-        if (response.status === 200) {
-          this.router.navigate(['/home']);
-        }
-      });
+  emailErrorMessage(): string | null {
+    const c = this.form.controls.email;
+    if (!c.touched && !c.dirty) return null;
+    if (c.hasError('required')) return 'Email is required.';
+    if (c.hasError('email')) return 'Please enter a valid email address.';
+    return null;
   }
 
-  getErrorMessage() {
-    if (this.loginForm.controls.email.hasError('required')) {
-      return 'You must enter a value';
+  passwordErrorMessage(): string | null {
+    const c = this.form.controls.password;
+    if (!c.touched && !c.dirty) return null;
+    if (c.hasError('required')) return 'Password is required.';
+    if (c.hasError('minlength')) return 'Password should be at least 6 characters.';
+    return null;
+  }
+
+  togglePassword() {
+    this.hidePassword.update((h) => !h);
+  }
+
+  onSubmit() {
+    if (this.form.invalid || this.submitting()) {
+      this.form.markAllAsTouched();
+      return;
     }
-    return this.loginForm.controls.email.hasError('email')
-      ? 'Not a valid email'
-      : '';
+    this.bannerError.set(null);
+    this.submitting.set(true);
+    const { email, password } = this.form.getRawValue();
+
+    this.authService.login(email, password).subscribe({
+      next: () => {
+        this.submitting.set(false);
+        this.router.navigate(['/home']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.submitting.set(false);
+        if (err.status === 401 || err.status === 400) {
+          this.bannerError.set('Invalid email or password.');
+        } else if (err.status === 0) {
+          this.bannerError.set('Cannot reach the server. Check your connection.');
+        } else {
+          this.bannerError.set('Sign-in failed. Please try again.');
+        }
+      },
+    });
   }
 }

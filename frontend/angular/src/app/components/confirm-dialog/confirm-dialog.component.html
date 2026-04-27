@@ -1,0 +1,21 @@
+<div class="confirm-dialog" [class.is-danger]="data.danger">
+  <div class="confirm-dialog-icon" aria-hidden="true">
+    <mat-icon>{{ data.icon ?? (data.danger ? 'warning' : 'help') }}</mat-icon>
+  </div>
+  <h2 mat-dialog-title class="confirm-dialog-title">{{ data.title }}</h2>
+  <mat-dialog-content class="confirm-dialog-message">{{ data.message }}</mat-dialog-content>
+  <mat-dialog-actions class="confirm-dialog-actions" align="end">
+    <button mat-stroked-button type="button" (click)="cancel()">
+      {{ data.cancelLabel ?? 'Cancel' }}
+    </button>
+    <button
+      mat-flat-button
+      type="button"
+      [color]="data.danger ? 'warn' : 'primary'"
+      (click)="confirm()"
+      cdkFocusInitial
+    >
+      {{ data.confirmLabel ?? 'Confirm' }}
+    </button>
+  </mat-dialog-actions>
+</div>

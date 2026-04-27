@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  min-width: 320px;
+  max-width: 460px;
+}
+
+.confirm-dialog {
+  padding: var(--app-space-4);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'icon  title'
+    '.     message'
+    '.     actions';
+  column-gap: var(--app-space-4);
+  row-gap: var(--app-space-3);
+  align-items: start;
+}
+
+.confirm-dialog-icon {
+  grid-area: icon;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.confirm-dialog.is-danger .confirm-dialog-icon {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.confirm-dialog-icon mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+}
+
+.confirm-dialog-title {
+  grid-area: title;
+  margin: 4px 0 0;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--mat-sys-on-surface);
+}
+
+.confirm-dialog-message {
+  grid-area: message;
+  margin: 0;
+  padding: 0;
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.5;
+}
+
+.confirm-dialog-actions {
+  grid-area: actions;
+  padding: 0;
+  margin-top: var(--app-space-2);
+}

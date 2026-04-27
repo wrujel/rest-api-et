@@ -1,0 +1,96 @@
+:host {
+  display: block;
+  min-width: 420px;
+  max-width: 560px;
+}
+
+.product-dialog {
+  padding: var(--app-space-5) var(--app-space-5) var(--app-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}
+
+.product-dialog-header {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-4);
+}
+
+.product-dialog-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  color: var(--mat-sys-on-primary);
+  flex-shrink: 0;
+}
+
+.product-dialog-icon mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+}
+
+.product-dialog-title {
+  margin: 0;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--mat-sys-on-surface);
+}
+
+.product-dialog-subtitle {
+  margin: 4px 0 0;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.92rem;
+}
+
+.product-dialog-banner {
+  display: flex;
+  gap: var(--app-space-3);
+  align-items: flex-start;
+  padding: var(--app-space-3) var(--app-space-4);
+  border-radius: var(--app-radius-md);
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+  font-size: 0.92rem;
+}
+
+.product-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+}
+
+.product-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  padding: 0;
+  margin: 0;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.product-dialog-content mat-form-field {
+  width: 100%;
+}
+
+.product-dialog-actions {
+  padding: var(--app-space-3) 0 0;
+  margin: 0;
+  gap: var(--app-space-2);
+}
+
+@media (max-width: 600px) {
+  :host {
+    min-width: 0;
+  }
+  .product-dialog {
+    padding: var(--app-space-4);
+  }
+}

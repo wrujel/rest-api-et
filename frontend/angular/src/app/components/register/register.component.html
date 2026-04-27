@@ -1,60 +1,123 @@
-<div class="wrapper">
-  <mat-card class="box">
-    <!-- card header -->
-    <mat-card-header>
-      <mat-card-title>Register</mat-card-title>
-    </mat-card-header>
+<section class="auth-shell">
+  <aside class="auth-marketing" aria-hidden="true">
+    <div>
+      <span class="auth-eyebrow">Join us</span>
+      <h1 class="auth-headline">Create your workspace.</h1>
+      <p class="auth-sub">
+        It takes a minute. Spin up your account and start building your catalog.
+      </p>
+    </div>
 
-    <form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit($event)">
-      <!-- card content -->
-      <mat-card-content>
-        <mat-form-field class="full-width">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" />
-        </mat-form-field>
+    <ul class="auth-feature-list">
+      <li><mat-icon>rocket_launch</mat-icon><span>Up and running instantly</span></li>
+      <li><mat-icon>encrypted</mat-icon><span>Your data stays yours</span></li>
+      <li><mat-icon>auto_awesome</mat-icon><span>Polished, friendly UI</span></li>
+    </ul>
+  </aside>
 
-        <mat-form-field class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" />
-          @if (registerForm.invalid) {
-          <mat-error>{{ getErrorMessage() }}</mat-error>
-          }
-        </mat-form-field>
+  <div class="auth-card">
+    <header class="auth-card-header">
+      <h2 class="auth-card-title">Create account</h2>
+      <p class="auth-card-subtitle">A few details and you're in.</p>
+    </header>
 
-        <mat-form-field class="full-width" t>
-          <mat-label>Enter your password</mat-label>
-          <input
-            matInput
-            [type]="hide ? 'password' : 'text'"
-            formControlName="password"
-          />
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="hide = !hide"
-            [attr.aria-label]="'Hide password'"
-            [attr.aria-pressed]="hide"
-          >
-            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
-          </button>
-        </mat-form-field>
-      </mat-card-content>
+    @if (bannerError()) {
+      <div class="auth-banner is-error" role="alert">
+        <mat-icon aria-hidden="true">error</mat-icon>
+        <span>{{ bannerError() }}</span>
+      </div>
+    }
+    @if (successMessage()) {
+      <div class="auth-banner is-success" role="status">
+        <mat-icon aria-hidden="true">check_circle</mat-icon>
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
 
-      <!-- card actions -->
-      <mat-card-actions>
-        <button mat-raised-button color="primary" class="btn-block">
-          Register
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input
+          matInput
+          type="text"
+          autocomplete="username"
+          formControlName="username"
+          required
+        />
+        <mat-icon matPrefix>person</mat-icon>
+        @if (usernameErrorMessage()) {
+          <mat-error>{{ usernameErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          autocomplete="email"
+          formControlName="email"
+          required
+        />
+        <mat-icon matPrefix>mail</mat-icon>
+        @if (emailErrorMessage()) {
+          <mat-error>{{ emailErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword() ? 'password' : 'text'"
+          autocomplete="new-password"
+          formControlName="password"
+          required
+        />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="togglePassword()"
+          [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
         </button>
-      </mat-card-actions>
+        <mat-hint>Use at least 8 characters with letters and numbers.</mat-hint>
+        @if (passwordErrorMessage()) {
+          <mat-error>{{ passwordErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      @if (strength().score > 0) {
+        <div class="password-meter" [attr.data-strength]="strength().score">
+          <mat-progress-bar mode="determinate" [value]="strength().percent"></mat-progress-bar>
+          <div class="password-meter-label">
+            <span>Password strength</span>
+            <strong>{{ strength().label }}</strong>
+          </div>
+        </div>
+      }
+
+      <button
+        mat-flat-button
+        color="primary"
+        class="auth-submit"
+        type="submit"
+        [disabled]="submitting() || successMessage() !== null"
+      >
+        @if (submitting()) {
+          <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
+          <span>Creating&hellip;</span>
+        } @else {
+          <span>Create account</span>
+        }
+      </button>
     </form>
 
-    <mat-card-footer>
-      @if (successMessage) {
-      <div class="success">{{ successMessage }}</div>
-      } @else if (errorMessage) {
-      <mat-error>{{ errorMessage }}</mat-error>
-      }
-    </mat-card-footer>
-  </mat-card>
-</div>
+    <p class="auth-aside">
+      Already have an account? <a routerLink="/login">Sign in</a>
+    </p>
+  </div>
+</section>

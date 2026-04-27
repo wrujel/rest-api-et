@@ -1,0 +1,4 @@
+@use '../../../styles/glass';
+@use '../../../styles/auth-layout' as a;
+
+@include a.auth-layout;

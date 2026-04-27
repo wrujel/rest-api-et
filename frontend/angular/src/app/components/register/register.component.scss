@@ -1,0 +1,39 @@
+@use '../../../styles/glass';
+@use '../../../styles/auth-layout' as a;
+
+@include a.auth-layout;
+
+.password-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+  margin-top: -8px;
+  margin-bottom: var(--app-space-2);
+}
+
+.password-meter mat-progress-bar {
+  --mdc-linear-progress-active-indicator-color: var(--app-meter-color, var(--mat-sys-error));
+  --mdc-linear-progress-track-height: 6px;
+  --mdc-linear-progress-active-indicator-height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.password-meter[data-strength='1'] { --app-meter-color: var(--mat-sys-error); }
+.password-meter[data-strength='2'] { --app-meter-color: #f59e0b; }
+.password-meter[data-strength='3'] { --app-meter-color: #14b8a6; }
+.password-meter[data-strength='4'] { --app-meter-color: var(--mat-sys-tertiary); }
+
+.password-meter-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--mat-sys-on-surface-variant);
+  letter-spacing: 0.04em;
+}
+
+.password-meter-label strong {
+  color: var(--app-meter-color, var(--mat-sys-on-surface));
+  font-weight: 600;
+  text-transform: capitalize;
+}

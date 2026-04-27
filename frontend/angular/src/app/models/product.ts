@@ -1,6 +1,5 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-
 export interface IProduct {
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -14,28 +13,4 @@ export interface IProductForm {
   price: string;
 }
 
-export const createProductForm = new FormGroup({
-  name: new FormControl('', [Validators.required]),
-  description: new FormControl(''),
-  price: new FormControl('', [
-    Validators.pattern('^[0-9]*$'),
-    Validators.required,
-  ]),
-});
-
-export const updateProductForm = new FormGroup({
-  name: new FormControl('', [Validators.required]),
-  description: new FormControl(''),
-  price: new FormControl('', [
-    Validators.pattern('^[0-9]*$'),
-    Validators.required,
-  ]),
-});
-
-export const PRODUCT_FIELDS = [
-  'name',
-  'description',
-  'price',
-  'username',
-  'email',
-];
+export const PRODUCT_FIELDS = ['name', 'price', 'description', 'owner'] as const;

@@ -1,0 +1,60 @@
+@use '../../../styles/glass';
+
+:host {
+  display: block;
+  min-height: calc(100vh - 64px);
+  display: grid;
+  place-items: center;
+  padding: var(--app-space-6);
+}
+
+.not-found-card {
+  @extend %glass-surface;
+  text-align: center;
+  padding: var(--app-space-7) var(--app-space-6);
+  max-width: 520px;
+  display: grid;
+  gap: var(--app-space-4);
+  justify-items: center;
+}
+
+.not-found-emoji {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  color: var(--mat-sys-on-primary);
+}
+
+.not-found-emoji mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+}
+
+.not-found-eyebrow {
+  margin: 0;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.not-found-title {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin: 0;
+  color: var(--mat-sys-on-surface);
+}
+
+.not-found-sub {
+  margin: 0;
+  max-width: 36ch;
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.55;
+}

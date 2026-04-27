@@ -1,18 +1,52 @@
-<mat-toolbar color="primary">
-  <a mat-button routerLink="home">Home</a>
-  <span class="spacer"></span>
-  @if (showLogin) {
-  <a mat-button routerLinkActive="activeButton" routerLink="login">Login</a>
-  <a mat-button routerLinkActive="activeButton" routerLink="register">
-    Register
+<nav class="app-bar">
+  <a class="brand" routerLink="/home">
+    <span class="brand-mark" aria-hidden="true">
+      <mat-icon>bolt</mat-icon>
+    </span>
+    <span>rest-api-et</span>
   </a>
-  } @else {
-  <a
-    mat-button
-    routerLinkActive="activeButton"
-    routerLink="login"
-    (click)="logout()"
-    >Logout</a
-  >
+
+  <span class="spacer"></span>
+
+  @if (auth.isLoggedIn()) {
+    <span class="nav-links">
+      <a
+        class="nav-link"
+        routerLink="/home"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >Products</a>
+    </span>
   }
-</mat-toolbar>
+
+  <button
+    type="button"
+    mat-icon-button
+    class="theme-toggle"
+    [matTooltip]="themeLabel()"
+    matTooltipPosition="below"
+    (click)="cycleTheme()"
+    [attr.aria-label]="themeLabel()"
+  >
+    <mat-icon>{{ themeIcon() }}</mat-icon>
+  </button>
+
+  @if (auth.isLoggedIn()) {
+    <button class="user-chip" type="button" [matMenuTriggerFor]="menu">
+      <span class="user-avatar" aria-hidden="true">{{ auth.initial() }}</span>
+      <span class="user-email">{{ auth.userEmail() }}</span>
+      <mat-icon aria-hidden="true">expand_more</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign out</span>
+      </button>
+    </mat-menu>
+  } @else {
+    <span class="nav-links">
+      <a class="nav-link" routerLink="/login" routerLinkActive="is-active">Sign in</a>
+      <a class="nav-link" routerLink="/register" routerLinkActive="is-active">Register</a>
+    </span>
+  }
+</nav>

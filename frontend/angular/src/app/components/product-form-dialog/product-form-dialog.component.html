@@ -1,0 +1,64 @@
+<div class="product-dialog">
+  <header class="product-dialog-header">
+    <span class="product-dialog-icon" aria-hidden="true">
+      <mat-icon>{{ isEdit ? 'edit' : 'add' }}</mat-icon>
+    </span>
+    <div>
+      <h2 mat-dialog-title class="product-dialog-title">{{ title }}</h2>
+      <p class="product-dialog-subtitle">{{ subtitle }}</p>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="product-dialog-banner" role="alert">
+      <mat-icon aria-hidden="true">error</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <form class="product-dialog-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <mat-dialog-content class="product-dialog-content">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required maxlength="80" />
+        @if (nameError()) {
+          <mat-error>{{ nameError() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Price</mat-label>
+        <span matTextPrefix>$&nbsp;</span>
+        <input matInput formControlName="price" required inputmode="decimal" placeholder="0.00" />
+        <mat-hint>Whole number or up to 2 decimals.</mat-hint>
+        @if (priceError()) {
+          <mat-error>{{ priceError() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="product-dialog-description">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          formControlName="description"
+          maxlength="280"
+          placeholder="What is it? Who's it for?"
+        ></textarea>
+        <mat-hint align="end">{{ form.controls.description.value.length }}/280</mat-hint>
+      </mat-form-field>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="product-dialog-actions">
+      <button mat-stroked-button type="button" (click)="cancel()" [disabled]="submitting()">
+        Cancel
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+        @if (submitting()) {
+          <mat-spinner diameter="18" mode="indeterminate"></mat-spinner>
+        }
+        <span>{{ submitLabel() }}</span>
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>

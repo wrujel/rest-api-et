@@ -1,0 +1,239 @@
+@use '../../../styles/glass';
+
+:host {
+  display: block;
+  padding: var(--app-space-6) clamp(var(--app-space-4), 4vw, var(--app-space-7));
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-5);
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--app-space-5);
+  flex-wrap: wrap;
+}
+
+.page-headline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+  min-width: 240px;
+}
+
+.page-eyebrow {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.page-title {
+  margin: 0;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.05;
+  color: var(--mat-sys-on-surface);
+}
+
+.page-sub {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+  max-width: 56ch;
+}
+
+.page-actions { flex-shrink: 0; }
+
+.page-card {
+  @extend %glass-surface;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  align-items: center;
+  padding: var(--app-space-4) var(--app-space-5);
+  border-bottom: 1px solid var(--app-glass-stroke);
+}
+
+.page-search {
+  flex: 1 1 280px;
+  min-width: 240px;
+}
+
+.page-toolbar-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.page-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.page-chip mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+}
+
+.page-menu-spacer {
+  display: inline-block;
+  width: 24px;
+}
+
+.page-progress {
+  height: 3px;
+  --mdc-linear-progress-active-indicator-color: var(--mat-sys-primary);
+}
+
+.page-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.page-table {
+  width: 100%;
+  background: transparent;
+}
+
+.page-table .mat-mdc-header-cell {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--mat-sys-on-surface-variant);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  background: color-mix(in oklch, var(--mat-sys-surface) 60%, transparent);
+}
+
+.page-table .mat-mdc-row {
+  transition: background var(--app-motion-fast) var(--app-motion-ease);
+}
+
+.page-table .mat-mdc-row:hover {
+  background: color-mix(in oklch, var(--mat-sys-primary) 7%, transparent);
+}
+
+.page-name {
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.page-price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--mat-sys-primary);
+}
+
+.page-description {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.page-owner {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.page-owner-name {
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+}
+
+.page-owner-email {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8rem;
+}
+
+.page-actions-col {
+  width: 110px;
+  text-align: right;
+}
+
+.page-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--app-space-3);
+  padding: var(--app-space-7) var(--app-space-5);
+}
+
+.page-state-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.page-state-icon--error {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.page-state-icon mat-icon {
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.page-state-title {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--mat-sys-on-surface);
+}
+
+.page-state-sub {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.5;
+}
+
+.page-paginator {
+  border-top: 1px solid var(--app-glass-stroke);
+  background: transparent;
+}
+
+@media (max-width: 720px) {
+  .page-table .mat-column-description,
+  .page-description { display: none; }
+  .page-actions-col { width: 92px; }
+}

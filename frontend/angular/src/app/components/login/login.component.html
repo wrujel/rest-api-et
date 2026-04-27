@@ -1,58 +1,93 @@
-<div class="wrapper">
-  <mat-card class="box">
-    <!-- card header -->
-    <mat-card-header>
-      <mat-card-title>Login</mat-card-title>
-    </mat-card-header>
+<section class="auth-shell">
+  <aside class="auth-marketing" aria-hidden="true">
+    <div>
+      <span class="auth-eyebrow">rest-api-et</span>
+      <h1 class="auth-headline">Welcome back.</h1>
+      <p class="auth-sub">
+        Manage your products, your way. Sign in to pick up where you left off.
+      </p>
+    </div>
 
-    <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <!-- card content -->
-      <mat-card-content>
-        <mat-form-field class="full-width">
-          <mat-label>Email</mat-label>
-          <input
-            matInput
-            required
-            placeholder="pat@example.com"
-            formControlName="email"
-          />
-          @if (loginForm.invalid) {
-          <mat-error>{{ getErrorMessage() }}</mat-error>
-          }
-        </mat-form-field>
+    <ul class="auth-feature-list">
+      <li><mat-icon>bolt</mat-icon><span>Fast, snappy CRUD</span></li>
+      <li><mat-icon>shield_lock</mat-icon><span>Token-based session security</span></li>
+      <li><mat-icon>palette</mat-icon><span>Light &amp; dark, your call</span></li>
+    </ul>
+  </aside>
 
-        <mat-form-field class="full-width">
-          <mat-label>Enter your password</mat-label>
-          <input
-            matInput
-            [type]="hide ? 'password' : 'text'"
-            formControlName="password"
-          />
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="hide = !hide"
-            [attr.aria-label]="'Hide password'"
-            [attr.aria-pressed]="hide"
-          >
-            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
-          </button>
-        </mat-form-field>
-      </mat-card-content>
+  <div class="auth-card">
+    <header class="auth-card-header">
+      <h2 class="auth-card-title">Sign in</h2>
+      <p class="auth-card-subtitle">Use your email and password.</p>
+    </header>
 
-      <!-- card actions -->
-      <mat-card-actions>
-        <button mat-raised-button color="primary" class="btn-block">
-          Log in
+    @if (bannerError()) {
+      <div class="auth-banner is-error" role="alert">
+        <mat-icon aria-hidden="true">error</mat-icon>
+        <span>{{ bannerError() }}</span>
+      </div>
+    }
+
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          autocomplete="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          required
+        />
+        <mat-icon matPrefix>mail</mat-icon>
+        @if (emailErrorMessage()) {
+          <mat-error>{{ emailErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword() ? 'password' : 'text'"
+          autocomplete="current-password"
+          formControlName="password"
+          required
+        />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="togglePassword()"
+          [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+          [attr.aria-pressed]="!hidePassword()"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
         </button>
-      </mat-card-actions>
+        @if (passwordErrorMessage()) {
+          <mat-error>{{ passwordErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        color="primary"
+        class="auth-submit"
+        type="submit"
+        [disabled]="submitting()"
+      >
+        @if (submitting()) {
+          <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
+          <span>Signing in&hellip;</span>
+        } @else {
+          <span>Sign in</span>
+        }
+      </button>
     </form>
 
-    <mat-card-footer>
-      @if (errorMessage) {
-      <mat-error>{{ errorMessage }}</mat-error>
-      }
-    </mat-card-footer>
-  </mat-card>
-</div>
+    <p class="auth-aside">
+      New here? <a routerLink="/register">Create an account</a>
+    </p>
+  </div>
+</section>
