@@ -35,7 +35,7 @@
 <div align='center'>
   REST API built with Express and TypeScript featuring user authentication, product CRUD operations, and an Angular 17 frontend with Angular Material. Uses MongoDB for data persistence.
 
-  [Demo]({{DEMO_URL}}) · [Report issue](/issues) · [Suggest something](/issues)
+  [Demo][demo-link] · [Report issue](/issues) · [Suggest something](/issues)
 </div>
 
 ## Table of Contents
