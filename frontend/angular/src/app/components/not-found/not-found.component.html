@@ -1,16 +1,16 @@
 <section class="not-found">
-  <div class="not-found-card">
+  <div class="not-found-card" appReveal>
     <span class="not-found-emoji" aria-hidden="true">
       <mat-icon>explore_off</mat-icon>
     </span>
     <p class="not-found-eyebrow">404 &middot; page not found</p>
     <h1 class="not-found-title">We can't find that page.</h1>
     <p class="not-found-sub">
-      The link may be broken, or the page may have moved. Let's get you home.
+      The link may be broken, or the page may have moved. Let's get you back to the docs.
     </p>
-    <a mat-flat-button color="primary" routerLink="/home">
-      <mat-icon>home</mat-icon>
-      <span>Back to home</span>
+    <a mat-flat-button color="primary" routerLink="/docs" appMagnetic>
+      <mat-icon>menu_book</mat-icon>
+      <span>Back to the docs</span>
     </a>
   </div>
 </section>

@@ -1,15 +1,28 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, shareReplay, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 const URL_PATH = environment.url;
-const TOKEN_KEY = 'sessionToken';
+const TOKEN_KEY = 'accessToken';
 const EMAIL_KEY = 'sessionEmail';
 
 interface LoginBody {
-  sessionToken?: string;
+  id?: string;
+  username?: string;
   email?: string;
+  accessToken?: string;
+}
+
+interface RefreshBody {
+  accessToken?: string;
+  email?: string;
+  username?: string;
+}
+
+interface OAuthProviders {
+  github: boolean;
+  google: boolean;
 }
 
 interface RegisterBody {
@@ -30,16 +43,29 @@ export class AuthService {
     return e ? e.trim().charAt(0).toUpperCase() : '?';
   });
 
+  /** null = not loaded yet; both false = none configured server-side. */
+  readonly oauthProviders = signal<OAuthProviders | null>(null);
+
+  loadProviders() {
+    if (this.oauthProviders() !== null) return;
+    this.http.get<OAuthProviders>(`${URL_PATH}/api/auth/providers`).subscribe({
+      next: (providers) => this.oauthProviders.set(providers),
+      error: () => this.oauthProviders.set({ github: false, google: false }),
+    });
+  }
+
+  private refreshInFlight$: Observable<HttpResponse<RefreshBody>> | null = null;
+
   login(email: string, password: string): Observable<HttpResponse<LoginBody>> {
     return this.http
       .post<LoginBody>(
         `${URL_PATH}/api/auth/login`,
         { email, password },
-        { observe: 'response' },
+        { observe: 'response', withCredentials: true },
       )
       .pipe(
         tap((response) => {
-          const token = response.body?.sessionToken;
+          const token = response.body?.accessToken;
           if (token) {
             this.writeStorage(TOKEN_KEY, token);
             this.writeStorage(EMAIL_KEY, email);
@@ -59,7 +85,45 @@ export class AuthService {
     );
   }
 
+  refresh(): Observable<HttpResponse<RefreshBody>> {
+    if (!this.refreshInFlight$) {
+      this.refreshInFlight$ = this.http
+        .post<RefreshBody>(
+          `${URL_PATH}/api/auth/refresh`,
+          {},
+          { observe: 'response', withCredentials: true },
+        )
+        .pipe(
+          tap((response) => {
+            const token = response.body?.accessToken;
+            if (token) {
+              this.writeStorage(TOKEN_KEY, token);
+              const email = response.body?.email;
+              if (email) {
+                this.writeStorage(EMAIL_KEY, email);
+                this.userEmail.set(email);
+              }
+              this._isLoggedIn$.next(true);
+              this.isLoggedIn.set(true);
+            }
+          }),
+          finalize(() => {
+            this.refreshInFlight$ = null;
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.refreshInFlight$;
+  }
+
   logout() {
+    this.http
+      .post(`${URL_PATH}/api/auth/logout`, {}, { withCredentials: true })
+      .subscribe({ error: () => undefined });
+    this.clearSession();
+  }
+
+  clearSession() {
     this.removeStorage(TOKEN_KEY);
     this.removeStorage(EMAIL_KEY);
     this.userEmail.set(null);

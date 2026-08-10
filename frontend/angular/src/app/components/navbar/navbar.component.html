@@ -1,23 +1,29 @@
 <nav class="app-bar">
-  <a class="brand" routerLink="/home">
+  <a class="brand" routerLink="/docs">
     <span class="brand-mark" aria-hidden="true">
       <mat-icon>bolt</mat-icon>
     </span>
-    <span>rest-api-et</span>
+    <span>API Dashboard</span>
   </a>
 
   <span class="spacer"></span>
 
-  @if (auth.isLoggedIn()) {
-    <span class="nav-links">
+  <span class="nav-links">
+    <a
+      class="nav-link"
+      routerLink="/docs"
+      routerLinkActive="is-active"
+      [routerLinkActiveOptions]="{ exact: false }"
+    >API Docs</a>
+    @if (auth.isLoggedIn()) {
       <a
         class="nav-link"
         routerLink="/home"
         routerLinkActive="is-active"
         [routerLinkActiveOptions]="{ exact: false }"
       >Products</a>
-    </span>
-  }
+    }
+  </span>
 
   <button
     type="button"

@@ -1,14 +1,54 @@
 import express from "express";
-import { getUserByEmail, createUser } from "../db/users";
-import { authentication, random } from "../helpers";
+import {
+  getUserByEmail,
+  getUserById,
+  createUser,
+  setRefreshToken,
+} from "../db/users";
+import {
+  hashPassword,
+  verifyPassword,
+  verifyLegacyPassword,
+  isArgon2Hash,
+  hashToken,
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+  REFRESH_TOKEN_TTL_MS,
+} from "../helpers";
 
-const ENVIRONMENT = process.env.ENVIRONMENT || "development";
+const REFRESH_COOKIE = "refreshToken";
 
 type IResponse = {
   id: string;
   username: string;
   email: string;
-  sessionToken?: string;
+  accessToken?: string;
+};
+
+const setRefreshCookie = (res: express.Response, token: string) => {
+  res.cookie(REFRESH_COOKIE, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.ENVIRONMENT === "production",
+    path: "/api/auth",
+    maxAge: REFRESH_TOKEN_TTL_MS,
+  });
+};
+
+const clearRefreshCookie = (res: express.Response) => {
+  res.clearCookie(REFRESH_COOKIE, { path: "/api/auth" });
+};
+
+const issueTokens = async (
+  res: express.Response,
+  userId: string
+): Promise<string> => {
+  const accessToken = signAccessToken(userId);
+  const refreshToken = signRefreshToken(userId);
+  await setRefreshToken(userId, hashToken(refreshToken));
+  setRefreshCookie(res, refreshToken);
+  return accessToken;
 };
 
 export const login = async (req: express.Request, res: express.Response) => {
@@ -17,36 +57,37 @@ export const login = async (req: express.Request, res: express.Response) => {
     if (!email || !password) return res.sendStatus(400);
 
     const user = await getUserByEmail(email).select(
-      "+authentication.salt +authentication.password"
+      "+authentication.password +authentication.salt"
     );
-    if (!user) return res.sendStatus(400);
+    if (!user) return res.sendStatus(401);
 
-    const expectedHash = authentication(user.authentication.salt, password);
-    if (expectedHash !== user.authentication.password)
-      return res.sendStatus(403);
+    const { password: storedHash, salt } = user.authentication;
+    // OAuth-only accounts have no password hash — they must use their provider.
+    if (!storedHash) return res.sendStatus(401);
 
-    const salt = random();
-    user.authentication.sessionToken = authentication(
-      salt,
-      user._id.toString()
-    );
-    await user.save();
+    let valid: boolean;
+    if (isArgon2Hash(storedHash)) {
+      valid = await verifyPassword(storedHash, password);
+    } else {
+      // Pre-JWT account: verify with the legacy scheme, then migrate to argon2.
+      valid = salt ? verifyLegacyPassword(salt, password, storedHash) : false;
+      if (valid) {
+        user.authentication.password = await hashPassword(password);
+        user.authentication.salt = undefined;
+        await user.save();
+      }
+    }
+    if (!valid) return res.sendStatus(401);
 
-    res.cookie("sessionToken", user.authentication.sessionToken, {
-      domain: "localhost",
-      path: "/",
-    });
+    const userId = user._id.toString();
+    const accessToken = await issueTokens(res, userId);
 
-    let body: IResponse = {
-      id: user._id.toString(),
+    const body: IResponse = {
+      id: userId,
       username: user.username,
       email: user.email,
+      accessToken,
     };
-
-    if (ENVIRONMENT === "development") {
-      body.sessionToken = user.authentication.sessionToken;
-    }
-
     return res.status(200).json(body).end();
   } catch (error) {
     console.log(error);
@@ -60,16 +101,65 @@ export const register = async (req: express.Request, res: express.Response) => {
     if (!username || !email || !password) return res.sendStatus(400);
 
     const existingUser = await getUserByEmail(email);
-    if (existingUser) return res.sendStatus(400);
+    if (existingUser) return res.sendStatus(409);
 
-    const salt = random();
     const user = await createUser({
       username,
       email,
-      authentication: { password: authentication(salt, password), salt },
+      authentication: { password: await hashPassword(password) },
     });
 
-    return res.status(201).json(user).end();
+    const body: IResponse = {
+      id: user._id.toString(),
+      username: user.username,
+      email: user.email,
+    };
+    return res.status(201).json(body).end();
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
+};
+
+export const refresh = async (req: express.Request, res: express.Response) => {
+  try {
+    const token = req.cookies?.[REFRESH_COOKIE];
+    if (!token) return res.sendStatus(401);
+
+    const userId = verifyRefreshToken(token);
+    if (!userId) {
+      clearRefreshCookie(res);
+      return res.sendStatus(401);
+    }
+
+    const user = await getUserById(userId).select(
+      "+authentication.refreshToken"
+    );
+    if (!user || user.authentication.refreshToken !== hashToken(token)) {
+      clearRefreshCookie(res);
+      return res.sendStatus(401);
+    }
+
+    const accessToken = await issueTokens(res, userId);
+    return res
+      .status(200)
+      .json({ accessToken, email: user.email, username: user.username })
+      .end();
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
+};
+
+export const logout = async (req: express.Request, res: express.Response) => {
+  try {
+    const token = req.cookies?.[REFRESH_COOKIE];
+    if (token) {
+      const userId = verifyRefreshToken(token);
+      if (userId) await setRefreshToken(userId, null);
+    }
+    clearRefreshCookie(res);
+    return res.sendStatus(204);
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);

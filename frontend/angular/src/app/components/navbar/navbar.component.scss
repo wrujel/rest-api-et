@@ -44,6 +44,7 @@
     radial-gradient(120% 120% at 0% 0%, color-mix(in oklch, var(--mat-sys-tertiary) 60%, transparent), transparent 70%),
     linear-gradient(135deg, var(--mat-sys-primary) 0%, color-mix(in oklch, var(--mat-sys-primary) 60%, var(--mat-sys-tertiary)) 100%);
   box-shadow: var(--app-elevation-1);
+  view-transition-name: brand-mark;
 }
 
 .brand-mark mat-icon {
@@ -119,6 +120,12 @@
 }
 
 .user-chip:hover { background: var(--mat-sys-surface-container-highest); }
+
+.theme-toggle mat-icon {
+  transition: transform var(--app-motion-slow) var(--app-motion-spring);
+}
+.theme-toggle:hover mat-icon { transform: rotate(28deg) scale(1.08); }
+.theme-toggle:active mat-icon { transform: rotate(160deg) scale(0.94); }
 
 .user-avatar {
   width: 28px;

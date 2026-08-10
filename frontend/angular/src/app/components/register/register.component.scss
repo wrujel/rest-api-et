@@ -7,22 +7,38 @@
   display: flex;
   flex-direction: column;
   gap: var(--app-space-2);
-  margin-top: -8px;
-  margin-bottom: var(--app-space-2);
+  margin-top: calc(-1 * var(--app-space-2));
+  animation: meter-in var(--app-motion-base) var(--app-motion-ease);
 }
 
-.password-meter mat-progress-bar {
-  --mdc-linear-progress-active-indicator-color: var(--app-meter-color, var(--mat-sys-error));
-  --mdc-linear-progress-track-height: 6px;
-  --mdc-linear-progress-active-indicator-height: 6px;
+@keyframes meter-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.password-meter-segments {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.password-meter-segment {
+  height: 6px;
   border-radius: 999px;
-  overflow: hidden;
+  background: color-mix(in oklch, var(--mat-sys-on-surface) 12%, transparent);
+  transition: background var(--app-motion-base) var(--app-motion-ease),
+    box-shadow var(--app-motion-base) var(--app-motion-ease);
 }
 
 .password-meter[data-strength='1'] { --app-meter-color: var(--mat-sys-error); }
 .password-meter[data-strength='2'] { --app-meter-color: #f59e0b; }
 .password-meter[data-strength='3'] { --app-meter-color: #14b8a6; }
 .password-meter[data-strength='4'] { --app-meter-color: var(--mat-sys-tertiary); }
+
+.password-meter-segment.is-active {
+  background: var(--app-meter-color, var(--mat-sys-error));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--app-meter-color, var(--mat-sys-error)) 65%, transparent);
+}
 
 .password-meter-label {
   display: flex;
@@ -32,8 +48,72 @@
   letter-spacing: 0.04em;
 }
 
-.password-meter-label strong {
+.password-meter-label > span:first-child {
   color: var(--app-meter-color, var(--mat-sys-on-surface));
   font-weight: 600;
   text-transform: capitalize;
+}
+
+.password-meter-crack {
+  font-variant-numeric: tabular-nums;
+}
+
+.password-meter-suggestion {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.password-checks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px var(--app-space-3);
+  margin: var(--app-space-1) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.password-check {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  font-size: 0.78rem;
+  color: var(--mat-sys-on-surface-variant);
+  transition: color var(--app-motion-base) var(--app-motion-ease);
+}
+
+.check-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  transition: background var(--app-motion-base) var(--app-motion-ease),
+    border-color var(--app-motion-base) var(--app-motion-ease),
+    transform var(--app-motion-base) var(--app-motion-spring);
+
+  mat-icon {
+    font-size: 11px;
+    width: 11px;
+    height: 11px;
+    color: var(--mat-sys-surface);
+  }
+}
+
+.password-check.is-met {
+  color: var(--mat-sys-tertiary);
+
+  .check-dot {
+    background: var(--mat-sys-tertiary);
+    border-color: var(--mat-sys-tertiary);
+    transform: scale(1.08);
+  }
+}
+
+@media (max-width: 420px) {
+  .password-checks {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,0 +1,166 @@
+<section class="docs">
+  <div class="docs-layout">
+    <!-- ── Sidebar: search + endpoint nav ─────────────────── -->
+    <aside class="docs-nav" aria-label="Endpoints">
+      <label class="docs-search">
+        <mat-icon>search</mat-icon>
+        <input type="search" [formControl]="searchControl" placeholder="Search" aria-label="Search endpoints" />
+      </label>
+
+      <span class="docs-nav-group">Products</span>
+      @for (endpoint of filtered(); track endpoint.id) {
+        <button
+          type="button"
+          class="docs-nav-item"
+          [class.is-active]="selected().id === endpoint.id"
+          (click)="select(endpoint.id)"
+        >
+          <span class="docs-nav-summary">{{ endpoint.summary }}</span>
+          <span class="docs-nav-method" [attr.data-method]="endpoint.method">{{ endpoint.method }}</span>
+        </button>
+      } @empty {
+        <span class="docs-nav-empty">No endpoints match "{{ searchControl.value }}".</span>
+      }
+    </aside>
+
+    <!-- ── Center: endpoint detail ────────────────────────── -->
+    <main class="docs-detail" appReveal>
+      <h1 class="docs-detail-title">{{ selected().summary }}</h1>
+      <p class="docs-detail-desc">{{ selected().description }}</p>
+
+      <div class="docs-badges">
+        @if (selected().auth) {
+          <span class="docs-badge docs-badge--auth">
+            <mat-icon>lock</mat-icon> Bearer token required
+          </span>
+        }
+        @if (selected().ownerOnly) {
+          <span class="docs-badge">
+            <mat-icon>person</mat-icon> Owner only
+          </span>
+        }
+      </div>
+
+      @if (queryParams().length) {
+        <h2 class="docs-section-title">Query Parameters</h2>
+        <div class="param-list">
+          @for (param of queryParams(); track param.name) {
+            <div class="param-row">
+              <div class="param-head">
+                <span class="param-name">{{ param.name }}</span>
+                <span class="param-type">{{ param.type }}</span>
+                @if (param.required) {
+                  <span class="param-required">Required</span>
+                }
+                @if (param.example) {
+                  <span class="param-example">Example: <code>{{ param.example }}</code></span>
+                }
+              </div>
+              <p class="param-desc">{{ param.description }}</p>
+            </div>
+          }
+        </div>
+      }
+
+      @if (bodyParams().length) {
+        <h2 class="docs-section-title">Body</h2>
+        <div class="param-list">
+          @for (param of bodyParams(); track param.name) {
+            <div class="param-row">
+              <div class="param-head">
+                <span class="param-name">{{ param.name }}</span>
+                <span class="param-type">{{ param.type }}</span>
+                @if (param.required) {
+                  <span class="param-required">Required</span>
+                }
+                @if (param.example) {
+                  <span class="param-example">Example: <code>{{ param.example }}</code></span>
+                }
+              </div>
+              <p class="param-desc">{{ param.description }}</p>
+            </div>
+          }
+        </div>
+      }
+
+      <h2 class="docs-section-title">Responses</h2>
+      <div class="resp-list">
+        @for (response of selected().responses; track response.status; let first = $first; let i = $index) {
+          <div class="resp" [class.is-open]="isResponseOpen(response.status, i)">
+            <button type="button" class="resp-head" (click)="toggleResponse(response.status, i)">
+              <mat-icon class="resp-chevron">chevron_right</mat-icon>
+              <span class="status-chip" [attr.data-status]="response.status">{{ response.status }}</span>
+              <span class="resp-label">{{ response.description }}</span>
+            </button>
+            @if (isResponseOpen(response.status, i)) {
+              <div class="resp-body">
+                @if (response.example) {
+                  <pre class="code-block"><code [innerHTML]="jsonHtml(response.example)"></code></pre>
+                } @else {
+                  <p class="resp-empty">No response body.</p>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (!auth.isLoggedIn()) {
+        <div class="docs-cta">
+          <span>Need a token to try these?</span>
+          <a mat-flat-button color="primary" routerLink="/register">Create an account</a>
+          <a mat-stroked-button routerLink="/login">Sign in</a>
+        </div>
+      }
+    </main>
+
+    <!-- ── Right: request sample + response peek ──────────── -->
+    <aside class="docs-side" appReveal appRevealDelay="120">
+      <div class="code-card">
+        <header class="code-card-head">
+          <span class="code-method" [attr.data-method]="selected().method">{{ selected().method }}</span>
+          <span class="code-path">{{ selected().path }}</span>
+          <span class="code-lang">Shell · Curl</span>
+          <button
+            type="button"
+            mat-icon-button
+            class="code-copy"
+            matTooltip="Copy as cURL"
+            aria-label="Copy as cURL"
+            (click)="copy(selected().curl)"
+          >
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </header>
+        <pre class="code-card-body"><code [innerHTML]="curlHtml()"></code></pre>
+        <footer class="code-card-foot">
+          <button type="button" class="btn-contrast" (click)="openTest()">
+            <mat-icon>play_arrow</mat-icon>
+            <span>Test Request</span>
+          </button>
+        </footer>
+      </div>
+
+      <div class="code-card">
+        <header class="code-card-head code-card-head--tabs">
+          @for (response of selected().responses; track response.status) {
+            <button
+              type="button"
+              class="resp-tab"
+              [class.is-active]="activeResponse().status === response.status"
+              [attr.data-status]="response.status"
+              (click)="activeStatus.set(response.status)"
+            >
+              {{ response.status }}
+            </button>
+          }
+        </header>
+        @if (activeResponse().example) {
+          <pre class="code-card-body"><code [innerHTML]="activeResponseHtml()"></code></pre>
+        } @else {
+          <p class="code-card-empty">{{ activeResponse().description }}</p>
+        }
+      </div>
+    </aside>
+  </div>
+</section>

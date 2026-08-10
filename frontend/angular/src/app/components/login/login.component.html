@@ -1,85 +1,82 @@
-<section class="auth-shell">
-  <div class="auth-hero-pane">
-    <app-auth-hero></app-auth-hero>
-  </div>
+<section class="auth-stage">
+  <div class="auth-card" appTilt="4">
+    <span class="auth-eyebrow" appReveal>Welcome back</span>
+    <h1 class="auth-headline" appSplitText>Sign in.</h1>
+    <p class="auth-aside-inline" appReveal appRevealDelay="120">
+      New here? <a routerLink="/register">Create an account</a>
+    </p>
 
-  <div class="auth-pane">
-    <div class="auth-pane-inner">
-      <span class="auth-eyebrow">Welcome back</span>
-      <h1 class="auth-headline">
-        Sign in<span class="auth-headline-dot">.</span>
-      </h1>
-      <p class="auth-aside-inline">
-        New here? <a routerLink="/register">Create an account</a>
-      </p>
+    @if (bannerError()) {
+      <div class="auth-banner is-error" role="alert">
+        <mat-icon aria-hidden="true">error</mat-icon>
+        <span>{{ bannerError() }}</span>
+      </div>
+    }
 
-      @if (bannerError()) {
-        <div class="auth-banner is-error" role="alert">
-          <mat-icon aria-hidden="true">error</mat-icon>
-          <span>{{ bannerError() }}</span>
-        </div>
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate appReveal appRevealDelay="200">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          autocomplete="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          required
+        />
+        <mat-icon matSuffix>mail</mat-icon>
+        @if (emailErrorMessage()) {
+          <mat-error>{{ emailErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword() ? 'password' : 'text'"
+          autocomplete="current-password"
+          formControlName="password"
+          (keydown)="onPasswordKey($event)"
+          (blur)="capsLock.set(false)"
+          required
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="togglePassword()"
+          [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        @if (passwordErrorMessage()) {
+          <mat-error>{{ passwordErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      @if (capsLock()) {
+        <p class="auth-caps-hint" role="status">&#21EA; Caps Lock is on</p>
       }
 
-      <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-        <mat-form-field appearance="fill">
-          <mat-label>Email</mat-label>
-          <input
-            matInput
-            type="email"
-            autocomplete="email"
-            formControlName="email"
-            placeholder="you@example.com"
-            required
-          />
-          <mat-icon matSuffix>mail</mat-icon>
-          @if (emailErrorMessage()) {
-            <mat-error>{{ emailErrorMessage() }}</mat-error>
+      <div class="auth-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          class="auth-submit"
+          type="submit"
+          [disabled]="submitting()"
+        >
+          @if (submitting()) {
+            <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
+            <span>Signing in&hellip;</span>
+          } @else {
+            <span>Sign in</span>
           }
-        </mat-form-field>
+        </button>
+      </div>
+    </form>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Password</mat-label>
-          <input
-            matInput
-            [type]="hidePassword() ? 'password' : 'text'"
-            autocomplete="current-password"
-            formControlName="password"
-            required
-          />
-          <button
-            type="button"
-            mat-icon-button
-            matSuffix
-            (click)="togglePassword()"
-            [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
-          >
-            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
-          </button>
-          @if (passwordErrorMessage()) {
-            <mat-error>{{ passwordErrorMessage() }}</mat-error>
-          }
-        </mat-form-field>
-
-        <div class="auth-actions">
-          <a mat-stroked-button class="auth-secondary" routerLink="/register">
-            Create account
-          </a>
-          <button
-            mat-flat-button
-            color="primary"
-            class="auth-submit"
-            type="submit"
-            [disabled]="submitting()"
-          >
-            @if (submitting()) {
-              <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
-              <span>Signing in&hellip;</span>
-            } @else {
-              <span>Sign in</span>
-            }
-          </button>
-        </div>
-      </form>
-    </div>
+    <app-social-login></app-social-login>
   </div>
 </section>

@@ -26,9 +26,10 @@
   --app-blur-md: 18px;
   --app-blur-lg: 28px;
 
-  --app-glass-fill: color-mix(in oklch, var(--mat-sys-surface) 72%, transparent);
-  --app-glass-stroke: color-mix(in oklch, var(--mat-sys-on-surface) 12%, transparent);
-  --app-glass-highlight: color-mix(in oklch, var(--mat-sys-surface-bright) 60%, transparent);
+  --app-glass-fill: color-mix(in oklch, var(--mat-sys-surface) 84%, transparent);
+  --app-glass-stroke: color-mix(in oklch, var(--mat-sys-on-surface) 16%, transparent);
+  --app-glass-highlight: color-mix(in oklch, var(--mat-sys-surface-bright) 70%, transparent);
+  --app-glass-bar-fill: color-mix(in oklch, var(--mat-sys-surface) 80%, transparent);
 
   --app-mesh-stop-1: color-mix(in oklch, var(--mat-sys-primary) 55%, transparent);
   --app-mesh-stop-2: color-mix(in oklch, var(--mat-sys-tertiary) 50%, transparent);
@@ -38,11 +39,30 @@
   --app-brand-azure-hi: #38b6ff;
   --app-on-brand-azure: #ffffff;
 
+  /* HTTP method colors (docs) — Scalar-style. */
+  --app-method-get: #0f766e;
+  --app-method-post: #15803d;
+  --app-method-put: #b45309;
+  --app-method-delete: #b91c1c;
+
   --app-motion-fast: 140ms;
   --app-motion-base: 240ms;
   --app-motion-slow: 420ms;
   --app-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --app-motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Aurora accent scale — derived from the active Material palette. */
+  --app-aurora-1: var(--mat-sys-primary);
+  --app-aurora-2: var(--mat-sys-tertiary);
+  --app-aurora-3: var(--mat-sys-secondary);
+  --app-aurora-glow: 0 0 24px color-mix(in oklch, var(--mat-sys-primary) 40%, transparent),
+    0 0 64px color-mix(in oklch, var(--mat-sys-tertiary) 22%, transparent);
+  --app-shimmer: linear-gradient(
+    105deg,
+    transparent 35%,
+    color-mix(in oklch, var(--mat-sys-on-surface) 9%, transparent) 50%,
+    transparent 65%
+  );
 }
 
 html.theme-dark {
@@ -52,6 +72,12 @@ html.theme-dark {
 
   --app-glass-fill: color-mix(in oklch, var(--mat-sys-surface-container-high) 60%, transparent);
   --app-glass-stroke: color-mix(in oklch, var(--mat-sys-on-surface) 18%, transparent);
+  --app-glass-bar-fill: color-mix(in oklch, var(--mat-sys-surface) 65%, transparent);
+
+  --app-method-get: #2dd4bf;
+  --app-method-post: #4ade80;
+  --app-method-put: #fbbf24;
+  --app-method-delete: #f87171;
 }
 
 @media (prefers-reduced-motion: reduce) {

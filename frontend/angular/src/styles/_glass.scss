@@ -27,10 +27,18 @@
 }
 
 %glass-bar {
-  background: color-mix(in oklch, var(--mat-sys-surface) 65%, transparent);
+  background: var(--app-glass-bar-fill);
   border-bottom: 1px solid var(--app-glass-stroke);
   backdrop-filter: blur(var(--app-blur-md)) saturate(160%);
   -webkit-backdrop-filter: blur(var(--app-blur-md)) saturate(160%);
+}
+
+/* Scalar-style flat panel: solid fill, hairline border, no blur — used on the
+   app pages (docs/home) where the background itself stays flat. */
+%flat-surface {
+  background: var(--mat-sys-surface-container-low);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--app-radius-lg);
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

@@ -1,116 +1,131 @@
-<section class="auth-shell">
-  <div class="auth-hero-pane">
-    <app-auth-hero></app-auth-hero>
-  </div>
+<section class="auth-stage">
+  <div class="auth-card" appTilt="4">
+    <span class="auth-eyebrow" appReveal>Start for free</span>
+    <h1 class="auth-headline" appSplitText>Create account.</h1>
+    <p class="auth-aside-inline" appReveal appRevealDelay="120">
+      Already a member? <a routerLink="/login">Sign in</a>
+    </p>
 
-  <div class="auth-pane">
-    <div class="auth-pane-inner">
-      <span class="auth-eyebrow">Start for free</span>
-      <h1 class="auth-headline">
-        Create new account<span class="auth-headline-dot">.</span>
-      </h1>
-      <p class="auth-aside-inline">
-        Already a member? <a routerLink="/login">Sign in</a>
-      </p>
+    @if (bannerError()) {
+      <div class="auth-banner is-error" role="alert">
+        <mat-icon aria-hidden="true">error</mat-icon>
+        <span>{{ bannerError() }}</span>
+      </div>
+    }
+    @if (successMessage()) {
+      <div class="auth-banner is-success" role="status">
+        <mat-icon aria-hidden="true">check_circle</mat-icon>
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
 
-      @if (bannerError()) {
-        <div class="auth-banner is-error" role="alert">
-          <mat-icon aria-hidden="true">error</mat-icon>
-          <span>{{ bannerError() }}</span>
-        </div>
-      }
-      @if (successMessage()) {
-        <div class="auth-banner is-success" role="status">
-          <mat-icon aria-hidden="true">check_circle</mat-icon>
-          <span>{{ successMessage() }}</span>
-        </div>
-      }
-
-      <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-        <mat-form-field appearance="fill">
-          <mat-label>Username</mat-label>
-          <input
-            matInput
-            type="text"
-            autocomplete="username"
-            formControlName="username"
-            required
-          />
-          <mat-icon matSuffix>badge</mat-icon>
-          @if (usernameErrorMessage()) {
-            <mat-error>{{ usernameErrorMessage() }}</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Email</mat-label>
-          <input
-            matInput
-            type="email"
-            autocomplete="email"
-            formControlName="email"
-            required
-          />
-          <mat-icon matSuffix>mail</mat-icon>
-          @if (emailErrorMessage()) {
-            <mat-error>{{ emailErrorMessage() }}</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Password</mat-label>
-          <input
-            matInput
-            [type]="hidePassword() ? 'password' : 'text'"
-            autocomplete="new-password"
-            formControlName="password"
-            required
-          />
-          <button
-            type="button"
-            mat-icon-button
-            matSuffix
-            (click)="togglePassword()"
-            [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
-          >
-            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
-          </button>
-          <mat-hint>At least 8 characters with letters and numbers.</mat-hint>
-          @if (passwordErrorMessage()) {
-            <mat-error>{{ passwordErrorMessage() }}</mat-error>
-          }
-        </mat-form-field>
-
-        @if (strength().score > 0) {
-          <div class="password-meter" [attr.data-strength]="strength().score">
-            <mat-progress-bar mode="determinate" [value]="strength().percent"></mat-progress-bar>
-            <div class="password-meter-label">
-              <span>Password strength</span>
-              <strong>{{ strength().label }}</strong>
-            </div>
-          </div>
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate appReveal appRevealDelay="200">
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input
+          matInput
+          type="text"
+          autocomplete="username"
+          formControlName="username"
+          required
+        />
+        <mat-icon matSuffix>badge</mat-icon>
+        @if (usernameErrorMessage()) {
+          <mat-error>{{ usernameErrorMessage() }}</mat-error>
         }
+      </mat-form-field>
 
-        <div class="auth-actions">
-          <a mat-stroked-button class="auth-secondary" routerLink="/login">
-            I have an account
-          </a>
-          <button
-            mat-flat-button
-            color="primary"
-            class="auth-submit"
-            type="submit"
-            [disabled]="submitting() || successMessage() !== null"
-          >
-            @if (submitting()) {
-              <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
-              <span>Creating&hellip;</span>
-            } @else {
-              <span>Create account</span>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          autocomplete="email"
+          formControlName="email"
+          required
+        />
+        <mat-icon matSuffix>mail</mat-icon>
+        @if (emailErrorMessage()) {
+          <mat-error>{{ emailErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword() ? 'password' : 'text'"
+          autocomplete="new-password"
+          formControlName="password"
+          (keydown)="onPasswordKey($event)"
+          (blur)="capsLock.set(false)"
+          required
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="togglePassword()"
+          [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        @if (passwordErrorMessage()) {
+          <mat-error>{{ passwordErrorMessage() }}</mat-error>
+        }
+      </mat-form-field>
+
+      @if (capsLock()) {
+        <p class="auth-caps-hint" role="status">&#21EA; Caps Lock is on</p>
+      }
+
+      @if (passwordValue()) {
+        <div class="password-meter" [attr.data-strength]="strength().score">
+          <div class="password-meter-segments" aria-hidden="true">
+            @for (segment of [1, 2, 3, 4]; track segment) {
+              <span class="password-meter-segment" [class.is-active]="strength().score >= segment"></span>
             }
-          </button>
+          </div>
+          <div class="password-meter-label">
+            <span>{{ strength().label }}</span>
+            @if (strength().crackTime) {
+              <span class="password-meter-crack">{{ strength().crackTime }} to crack</span>
+            }
+          </div>
+          @if (strength().suggestion) {
+            <p class="password-meter-suggestion">{{ strength().suggestion }}</p>
+          }
+          <ul class="password-checks">
+            @for (check of checks(); track check.label) {
+              <li class="password-check" [class.is-met]="check.met">
+                <span class="check-dot" aria-hidden="true">
+                  @if (check.met) { <mat-icon>check</mat-icon> }
+                </span>
+                <span>{{ check.label }}</span>
+              </li>
+            }
+          </ul>
         </div>
-      </form>
-    </div>
+      }
+
+      <div class="auth-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          class="auth-submit"
+          type="submit"
+          [disabled]="submitting() || successMessage() !== null"
+        >
+          @if (submitting()) {
+            <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
+            <span>Creating&hellip;</span>
+          } @else {
+            <span>Create account</span>
+          }
+        </button>
+      </div>
+    </form>
+
+    <app-social-login></app-social-login>
   </div>
 </section>

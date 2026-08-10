@@ -1,10 +1,9 @@
 import express from "express";
 import { get, merge } from "lodash";
 
-import { getUserBySessionToken } from "../db/users";
+import { getUserById } from "../db/users";
 import { getProductById } from "../db/product";
-
-const ENVIRONMENT = process.env.ENVIRONMENT || "development";
+import { verifyAccessToken } from "../helpers";
 
 export const isAuthenticated = async (
   req: express.Request,
@@ -12,13 +11,15 @@ export const isAuthenticated = async (
   next: express.NextFunction
 ) => {
   try {
-    let sessionToken =
-      get(req, "cookies.sessionToken") ||
-      (ENVIRONMENT === "development" ? get(req, "headers.sessiontoken") : null);
-    if (!sessionToken) return res.sendStatus(403);
+    const header = get(req, "headers.authorization") as string | undefined;
+    const token = header?.startsWith("Bearer ") ? header.slice(7) : null;
+    if (!token) return res.sendStatus(401);
 
-    const user = await getUserBySessionToken(sessionToken);
-    if (!user) return res.sendStatus(403);
+    const userId = verifyAccessToken(token);
+    if (!userId) return res.sendStatus(401);
+
+    const user = await getUserById(userId);
+    if (!user) return res.sendStatus(401);
 
     merge(req, { identity: user });
 

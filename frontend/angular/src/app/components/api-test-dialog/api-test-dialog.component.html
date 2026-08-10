@@ -1,0 +1,188 @@
+<div class="client">
+  <!-- ── URL bar ─────────────────────────────────────────── -->
+  <header class="client-bar">
+    <span class="client-method" [attr.data-method]="endpoint.method">{{ endpoint.method }}</span>
+    <span class="client-url">
+      <span class="client-host">{{ displayHost }}</span>
+      <span class="client-path">{{ displayPath }}</span>
+    </span>
+    <span class="client-spacer"></span>
+    <button type="button" class="btn-contrast" (click)="send()" [disabled]="sending()">
+      @if (sending()) {
+        <mat-spinner diameter="16"></mat-spinner>
+        <span>Sending…</span>
+      } @else {
+        <mat-icon>play_arrow</mat-icon>
+        <span>Send</span>
+      }
+    </button>
+    <button type="button" class="client-close" aria-label="Close" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <div class="client-cols">
+    <!-- ── Request ────────────────────────────────────────── -->
+    <div class="client-col">
+      <h3 class="client-heading">{{ endpoint.summary }}</h3>
+
+      @if (endpoint.auth) {
+        <section class="sect">
+          <button type="button" class="sect-head" (click)="toggle('auth')">
+            <mat-icon class="sect-chevron" [class.is-open]="isOpen('auth')">chevron_right</mat-icon>
+            <span>Authentication</span>
+          </button>
+          @if (isOpen('auth')) {
+            <div class="sect-body">
+              @if (sessionToken) {
+                <p class="sect-note">
+                  <mat-icon>lock</mat-icon>
+                  Using your signed-in session token.
+                </p>
+              } @else {
+                <input
+                  type="password"
+                  class="client-input"
+                  [formControl]="tokenControl"
+                  placeholder="Paste a Bearer accessToken"
+                  autocomplete="off"
+                />
+              }
+            </div>
+          }
+        </section>
+      }
+
+      <section class="sect">
+        <button type="button" class="sect-head" (click)="toggle('headers')">
+          <mat-icon class="sect-chevron" [class.is-open]="isOpen('headers')">chevron_right</mat-icon>
+          <span>Headers</span>
+        </button>
+        @if (isOpen('headers')) {
+          <div class="sect-body">
+            @for (row of requestHeaders(); track row.key) {
+              <div class="kv-row">
+                <mat-icon class="kv-check">check</mat-icon>
+                <span class="kv-key">{{ row.key }}</span>
+                <span class="kv-value">{{ row.value }}</span>
+              </div>
+            }
+          </div>
+        }
+      </section>
+
+      @if (queryParams.length) {
+        <section class="sect">
+          <button type="button" class="sect-head" (click)="toggle('query')">
+            <mat-icon class="sect-chevron" [class.is-open]="isOpen('query')">chevron_right</mat-icon>
+            <span>Query Parameters</span>
+          </button>
+          @if (isOpen('query')) {
+            <div class="sect-body">
+              @for (param of queryParams; track param.name) {
+                <div class="kv-row">
+                  <mat-icon class="kv-check">check</mat-icon>
+                  <span class="kv-key">{{ param.name }}</span>
+                  <input class="kv-input" [formControl]="paramControls[param.name]" [placeholder]="param.required ? 'required' : 'optional'" />
+                </div>
+              }
+            </div>
+          }
+        </section>
+      }
+
+      @if (hasBody) {
+        <section class="sect">
+          <button type="button" class="sect-head" (click)="toggle('body')">
+            <mat-icon class="sect-chevron" [class.is-open]="isOpen('body')">chevron_right</mat-icon>
+            <span>Body</span>
+          </button>
+          @if (isOpen('body')) {
+            <div class="sect-body">
+              <div class="editor">
+                <div class="editor-gutter" #bodyGutter aria-hidden="true">
+                  @for (n of bodyLines(); track n) {
+                    <span>{{ n }}</span>
+                  }
+                </div>
+                <textarea
+                  class="editor-area"
+                  [formControl]="bodyControl"
+                  (scroll)="syncGutter($event.target)"
+                  spellcheck="false"
+                  rows="8"
+                ></textarea>
+              </div>
+            </div>
+          }
+        </section>
+      }
+
+      @if (sendError(); as error) {
+        <p class="client-error" role="alert">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error }}</span>
+        </p>
+      }
+    </div>
+
+    <!-- ── Response ───────────────────────────────────────── -->
+    <div class="client-col">
+      <div class="client-res-meta">
+        @if (result(); as r) {
+          <span class="client-ms">{{ r.ms }}ms</span>
+          <span class="status-chip" [attr.data-status]="r.status">{{ r.status }} {{ r.statusText }}</span>
+          @if (r.body) {
+            <button type="button" class="client-ghost-btn" aria-label="Copy response" (click)="copyResult()">
+              <mat-icon>content_copy</mat-icon>
+            </button>
+          }
+        } @else {
+          <span class="client-res-hint">Press Send to get a response</span>
+        }
+      </div>
+
+      @if (result(); as r) {
+        <section class="sect">
+          <button type="button" class="sect-head" (click)="toggle('resHeaders')">
+            <mat-icon class="sect-chevron" [class.is-open]="isOpen('resHeaders')">chevron_right</mat-icon>
+            <span>Headers</span>
+          </button>
+          @if (isOpen('resHeaders')) {
+            <div class="sect-body">
+              @for (row of r.headers; track row[0]) {
+                <div class="kv-row">
+                  <span class="kv-key">{{ row[0] }}</span>
+                  <span class="kv-value">{{ row[1] }}</span>
+                </div>
+              }
+            </div>
+          }
+        </section>
+
+        <section class="sect">
+          <button type="button" class="sect-head" (click)="toggle('resBody')">
+            <mat-icon class="sect-chevron" [class.is-open]="isOpen('resBody')">chevron_right</mat-icon>
+            <span>Body</span>
+          </button>
+          @if (isOpen('resBody')) {
+            <div class="sect-body">
+              @if (r.body) {
+                <div class="editor editor--readonly">
+                  <div class="editor-gutter" aria-hidden="true">
+                    @for (n of resultLines(); track n) {
+                      <span>{{ n }}</span>
+                    }
+                  </div>
+                  <pre class="editor-view"><code [innerHTML]="resultHtml()"></code></pre>
+                </div>
+              } @else {
+                <p class="sect-note sect-note--muted">Empty response body.</p>
+              }
+            </div>
+          }
+        </section>
+      }
+    </div>
+  </div>
+</div>

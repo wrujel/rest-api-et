@@ -22,6 +22,8 @@ import {
   ProductFormDialogData,
 } from '../product-form-dialog/product-form-dialog.component';
 import { listStagger } from '../../app.animations';
+import { CountUpDirective } from '../../directives/count-up.directive';
+import { RevealDirective } from '../../directives/reveal.directive';
 
 type SortKey = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc';
 
@@ -47,6 +49,8 @@ const SORT_LABELS: Record<SortKey, string> = {
     MatProgressBarModule,
     MatTableModule,
     MatTooltipModule,
+    CountUpDirective,
+    RevealDirective,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

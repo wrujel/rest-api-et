@@ -1,7 +1,6 @@
 @use '@angular/material' as mat;
 @use './styles/tokens';
 @use './styles/glass';
-@use './styles/mesh';
 
 html {
   color-scheme: light dark;
@@ -29,6 +28,18 @@ html, body {
   height: 100%;
 }
 
+/* Reserve the scrollbar gutter so pages don't jump sideways when a
+   scrollbar appears/disappears (and so inner grids never re-flow into a
+   transient horizontal overflow). */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* The reserved gutter is painted as the scrollbar track, so give it a
+   transparent track to blend into the page surface; only the thumb shows. */
+html.theme-light { scrollbar-color: rgba(15, 23, 42, 0.3) transparent; }
+html.theme-dark { scrollbar-color: rgba(255, 255, 255, 0.24) transparent; }
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -50,6 +61,152 @@ a:hover { color: var(--mat-sys-tertiary); }
   background: color-mix(in oklch, var(--mat-sys-primary) 35%, transparent);
   color: var(--mat-sys-on-primary-container);
 }
+
+/* Docs page: true-black Scalar-style surface (dark theme only). The AppComponent
+   toggles `docs-page` on <body> while the /docs route is active. */
+html.theme-dark body.docs-page {
+  --mat-sys-surface: #0e0e10;
+  background-color: #0e0e10;
+}
+
+/* High-contrast white button (Scalar "Send"/"Test Request" style). */
+.btn-contrast {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #eef0f3;
+  color: #111214;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background var(--app-motion-fast) var(--app-motion-ease),
+    transform var(--app-motion-fast) var(--app-motion-ease);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+  }
+}
+
+.btn-contrast:hover { background: #ffffff; }
+.btn-contrast:active { transform: scale(0.97); }
+.btn-contrast:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+}
+
+/* API test dialog: dark client-modal surface. */
+.api-test-panel .mdc-dialog__surface {
+  background: #101014;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+}
+
+/* ── Docs: shared code blocks, chips & syntax tokens ─────────────
+   Code cards stay dark in both themes (Scalar-style), so the token
+   colors below are tuned for a dark background only. */
+
+.code-block {
+  margin: 0;
+  padding: var(--app-space-4);
+  background: #15171c;
+  border: 1px solid rgba(230, 237, 243, 0.08);
+  border-radius: 8px;
+  overflow-x: hidden;
+
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, 'Cascadia Code', Consolas, monospace;
+    font-size: 0.8rem;
+    line-height: 1.65;
+    color: #e6edf3;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: transparent;
+    padding: 0;
+  }
+}
+
+.method-chip {
+  display: inline-block;
+  min-width: 58px;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: var(--app-radius-xs);
+  color: #fff;
+  background: var(--mat-sys-outline);
+}
+
+.method-chip[data-method='GET'] { background: var(--app-method-get); }
+.method-chip[data-method='POST'] { background: var(--app-method-post); }
+.method-chip[data-method='PUT'] { background: var(--app-method-put); }
+.method-chip[data-method='DELETE'] { background: var(--app-method-delete); }
+
+.status-chip {
+  display: inline-block;
+  min-width: 48px;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 0.74rem;
+  padding: 3px 8px;
+  border-radius: var(--app-radius-xs);
+}
+
+.status-chip[data-status^='2'] {
+  background: color-mix(in srgb, #16a34a 18%, transparent);
+  color: #16a34a;
+}
+
+.status-chip[data-status^='4'] {
+  background: color-mix(in srgb, #dc2626 14%, transparent);
+  color: #dc2626;
+}
+
+.status-chip[data-status^='5'] {
+  background: color-mix(in srgb, #d97706 16%, transparent);
+  color: #d97706;
+}
+
+/* Status chips on dark surfaces (black docs page, dark client modal) need
+   brighter tones than on the light page. */
+html.theme-dark .status-chip[data-status^='2'],
+.api-test-panel .status-chip[data-status^='2'] {
+  background: rgba(74, 222, 128, 0.14);
+  color: #4ade80;
+}
+
+html.theme-dark .status-chip[data-status^='4'],
+.api-test-panel .status-chip[data-status^='4'] {
+  background: rgba(248, 113, 113, 0.14);
+  color: #f87171;
+}
+
+html.theme-dark .status-chip[data-status^='5'],
+.api-test-panel .status-chip[data-status^='5'] {
+  background: rgba(251, 191, 36, 0.14);
+  color: #fbbf24;
+}
+
+/* Syntax tokens injected via [innerHTML] inside .code-block. */
+.tok-key { color: #7dd3fc; }
+.tok-str { color: #a5d6a7; }
+.tok-num { color: #fbbf24; }
+.tok-bool { color: #f472b6; }
+.tok-cmd { color: #7dd3fc; font-weight: 600; }
+.tok-flag { color: #c4b5fd; }
+.tok-url { color: #7dd3fc; }
 
 /* Material Symbols variable-font setup */
 .material-symbols-outlined {
@@ -82,6 +239,13 @@ a:hover { color: var(--mat-sys-tertiary); }
   border-radius: var(--app-radius-xs);
 }
 
+/* Per-character spans produced by the appSplitText directive. */
+.split-char {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+
 /* Friendly snackbar tweak */
 .mat-mdc-snack-bar-container.app-snackbar-error {
   --mdc-snackbar-container-color: var(--mat-sys-error-container);
@@ -90,4 +254,67 @@ a:hover { color: var(--mat-sys-tertiary); }
 .mat-mdc-snack-bar-container.app-snackbar-success {
   --mdc-snackbar-container-color: var(--mat-sys-tertiary-container);
   --mdc-snackbar-supporting-text-color: var(--mat-sys-on-tertiary-container);
+}
+
+/* Dialog entrance: scale + de-blur (reduced-motion users get the default). */
+@media (prefers-reduced-motion: no-preference) {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    animation: app-dialog-in var(--app-motion-slow) var(--app-motion-spring);
+  }
+
+  @keyframes app-dialog-in {
+    from {
+      opacity: 0;
+      transform: scale(0.92) translateY(14px);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+  }
+}
+
+/* Route morphs via the View Transitions API (withViewTransitions).
+   Browsers without support simply skip these and cut instantly. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--app-motion-slow);
+  animation-timing-function: var(--app-motion-ease);
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { animation-name: app-vt-fade-out; }
+::view-transition-new(root) { animation-name: app-vt-fade-in; }
+
+@keyframes app-vt-fade-out {
+  to { opacity: 0; }
+}
+@keyframes app-vt-fade-in {
+  from { opacity: 0; }
+}
+
+/* Named elements morph between routes instead of crossfading. */
+::view-transition-group(auth-card),
+::view-transition-group(brand-mark) {
+  animation-duration: var(--app-motion-slow);
+  animation-timing-function: var(--app-motion-spring);
+}
+
+/* Leaving the auth pages, the card has no counterpart on the new route —
+   fade its snapshot out fast so it doesn't linger as a glass overlay.
+   (On login ↔ register both sides exist and the group morph still applies.) */
+::view-transition-old(auth-card) {
+  animation-name: app-vt-fade-out;
+  animation-duration: var(--app-motion-fast);
+  animation-timing-function: var(--app-motion-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(auth-card),
+  ::view-transition-group(brand-mark) {
+    animation: none;
+  }
 }

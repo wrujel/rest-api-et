@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,7 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../services/auth.service';
-import { AuthHeroComponent } from '../auth-hero/auth-hero.component';
+import { SocialLoginComponent } from '../social-login/social-login.component';
+import { RevealDirective } from '../../directives/reveal.directive';
+import { SplitTextDirective } from '../../directives/split-text.directive';
+import { TiltDirective } from '../../directives/tilt.directive';
+import { AuthCardMorphDirective } from '../../directives/auth-card-morph.directive';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +24,11 @@ import { AuthHeroComponent } from '../auth-hero/auth-hero.component';
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    AuthHeroComponent,
+    SocialLoginComponent,
+    RevealDirective,
+    SplitTextDirective,
+    TiltDirective,
+    AuthCardMorphDirective,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -32,7 +40,12 @@ export class LoginComponent {
 
   readonly hidePassword = signal(true);
   readonly submitting = signal(false);
-  readonly bannerError = signal<string | null>(null);
+  readonly bannerError = signal<string | null>(
+    inject(ActivatedRoute).snapshot.queryParamMap.get('error') === 'oauth'
+      ? 'Social sign-in failed or is not configured. Try your email instead.'
+      : null,
+  );
+  readonly capsLock = signal(false);
 
   readonly form = new FormGroup({
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
@@ -59,6 +72,10 @@ export class LoginComponent {
     this.hidePassword.update((h) => !h);
   }
 
+  onPasswordKey(event: KeyboardEvent) {
+    this.capsLock.set(event.getModifierState?.('CapsLock') ?? false);
+  }
+
   onSubmit() {
     if (this.form.invalid || this.submitting()) {
       this.form.markAllAsTouched();
@@ -79,6 +96,8 @@ export class LoginComponent {
           this.bannerError.set('Invalid email or password.');
         } else if (err.status === 0) {
           this.bannerError.set('Cannot reach the server. Check your connection.');
+        } else if (err.status === 429) {
+          this.bannerError.set('Too many attempts. Wait a few minutes and try again.');
         } else {
           this.bannerError.set('Sign-in failed. Please try again.');
         }

@@ -1,5 +1,5 @@
 <section class="page">
-  <header class="page-header">
+  <header class="page-header" appReveal>
     <div class="page-headline">
       <span class="page-eyebrow">{{ greeting() }}</span>
       <h1 class="page-title">Products</h1>
@@ -14,7 +14,7 @@
     </div>
   </header>
 
-  <div class="page-card">
+  <div class="page-card" appReveal appRevealDelay="140">
     <div class="page-toolbar">
       <mat-form-field appearance="outline" class="page-search" subscriptSizing="dynamic">
         <mat-icon matPrefix>search</mat-icon>
@@ -36,7 +36,7 @@
       <div class="page-toolbar-meta">
         <span class="page-chip" matTooltip="Filtered count">
           <mat-icon>filter_list</mat-icon>
-          {{ totalCount() }} of {{ products().length }}
+          <span [appCountUp]="totalCount()"></span>&nbsp;of&nbsp;<span [appCountUp]="products().length"></span>
         </span>
 
         <button mat-stroked-button type="button" [matMenuTriggerFor]="sortMenu">

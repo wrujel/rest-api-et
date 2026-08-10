@@ -51,11 +51,14 @@ export const getProductById = async (
 
 export const createProduct = async (req: any, res: express.Response) => {
   try {
-    await createProduct_({
+    const product = await createProduct_({
       ...req.body,
       user: req.identity._id.toString(),
     });
-    return res.status(201).end();
+    return res
+      .status(201)
+      .json({ id: product._id })
+      .end();
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
