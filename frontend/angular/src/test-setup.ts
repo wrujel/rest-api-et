@@ -68,6 +68,12 @@ Element.prototype.scrollIntoView ??= () => undefined;
 HTMLCanvasElement.prototype.getContext = (() =>
   null) as typeof HTMLCanvasElement.prototype.getContext;
 
+// NOTE: the test target sets `isolate: true` in angular.json, which the
+// builder leaves off by default. Several directive specs spy on the shared
+// `gsap` singleton; without a module registry per file those spies chain onto
+// each other and their call counts merge across specs. Turning isolation off
+// again will make those suites fail in whatever order CI happens to schedule.
+//
 // Specs reach for `vi.spyOn` on shared globals (localStorage, matchMedia, gsap).
 // Restoring after every test keeps one spec's stub from leaking into the next;
 // the unit-test builder does not enable `restoreMocks` on its own.

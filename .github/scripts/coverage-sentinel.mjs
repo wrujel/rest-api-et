@@ -8,17 +8,24 @@
  * total line counts are summed across both, so the number describes the
  * deployed artifact as a whole (the API serves the dashboard).
  *
- * Every read is best-effort: a suite that never produced a report contributes
- * nothing rather than dragging the figure toward a fictional zero. If neither
- * suite reported, the payload is `{"pct":null}` and the studio shows "n/a",
- * which is the honest answer.
+ * Both halves are required for that sum to mean anything. `@angular/build`
+ * writes no coverage report at all when its suite fails, and reporting the
+ * API's half alone would publish a confident "100%" for a run that measured
+ * half the project. A missing half therefore yields `{"pct":null}` — the
+ * studio shows "n/a", which is the honest answer for "not measured".
+ *
+ * Test counts are reported independently: the JSON reporter DOES write on
+ * failure, so the passed/failed split survives even when coverage does not.
  */
 import { readFileSync } from "node:fs";
 
-/** istanbul json-summary files, in the order the suites run. */
+/** istanbul json-summary files — every one of these must be present. */
 const SUMMARIES = [
-  "coverage/coverage-summary.json",
-  "frontend/angular/coverage/angular/coverage-summary.json",
+  { name: "api", path: "coverage/coverage-summary.json" },
+  {
+    name: "dashboard",
+    path: "frontend/angular/coverage/angular/coverage-summary.json",
+  },
 ];
 
 /** vitest json reports, for the passed/failed/skipped counts. */
@@ -34,9 +41,14 @@ const readJson = (path) => {
 
 let covered = 0;
 let total = 0;
-for (const path of SUMMARIES) {
+const missing = [];
+
+for (const { name, path } of SUMMARIES) {
   const lines = readJson(path)?.total?.lines;
-  if (!lines) continue;
+  if (!lines) {
+    missing.push(name);
+    continue;
+  }
   covered += Number(lines.covered) || 0;
   total += Number(lines.total) || 0;
 }
@@ -53,10 +65,16 @@ for (const path of REPORTS) {
 }
 
 // `total === 0` means nothing was instrumented, which is unknown — not 0%.
-const payload =
-  total > 0
-    ? { pct: (covered / total) * 100, lines: { covered, total } }
-    : { pct: null };
+const measured = missing.length === 0 && total > 0;
+if (!measured && missing.length) {
+  console.log(
+    `::warning::no coverage report from: ${missing.join(", ")} — reporting the percentage as unmeasured`,
+  );
+}
+
+const payload = measured
+  ? { pct: (covered / total) * 100, lines: { covered, total } }
+  : { pct: null };
 if (sawReport) payload.tests = tests;
 
 console.log(

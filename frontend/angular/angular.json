@@ -85,6 +85,7 @@
             "buildTarget": "angular:build:test",
             "tsConfig": "tsconfig.spec.json",
             "runner": "vitest",
+            "isolate": true,
             "setupFiles": [
               "src/test-setup.ts"
             ],
