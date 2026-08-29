@@ -1,0 +1,62 @@
+# Unit tests + coverage, reported back to the Content Studio.
+#
+# The studio's scheduler dispatches this daily and then READS this run: its
+# conclusion becomes the project's "unit tests" tag, and the MONITOR_COVERAGE
+# line printed at the end becomes its "coverage %" tag and the shields endpoint
+# the studio publishes. Nothing is committed here, no secret is needed, and the
+# README is maintained by the studio — do not add badges to it by hand.
+#
+# Both suites run in one job so the project reports one conclusion and one
+# percentage: the Express API at the repo root and the Angular dashboard under
+# frontend/angular, installed together from the single pnpm workspace.
+name: Coverage
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# A newer run supersedes an in-flight one on the same ref — a daily dispatch
+# landing on top of a push must not queue behind it.
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the version out of the root package.json's `packageManager` field.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: API unit tests
+        run: pnpm run test:ci
+
+      # `always()`: a failing API suite must not hide the dashboard's result.
+      # The job still fails overall, which is what reddens the unit-tests tag.
+      - name: Dashboard unit tests
+        if: always()
+        run: pnpm run test:ui:ci
+
+      # `always()`: a failing suite still measured something, and the studio
+      # shows the red tag NEXT TO a real percentage. Skipping this on failure
+      # would blank the badge exactly when it matters most.
+      - name: Report to the studio
+        if: always()
+        run: node .github/scripts/coverage-sentinel.mjs

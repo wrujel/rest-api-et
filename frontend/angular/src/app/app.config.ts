@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
+  ViewTransitionsFeatureOptions,
   provideRouter,
   withComponentInputBinding,
   withViewTransitions,
@@ -14,11 +15,20 @@ import { authInterceptor } from './services/auth.interceptor';
 import { errorInterceptor } from './services/error.interceptor';
 
 /** Resolved route path ('docs', 'home', …) regardless of which node we get. */
-const routePathOf = (state: ActivatedRouteSnapshot): string => {
+export const routePathOf = (state: ActivatedRouteSnapshot): string => {
   let node = state;
   while (node.firstChild) node = node.firstChild;
   return node.routeConfig?.path ?? '';
 };
+
+/**
+ * Same-page navigations (e.g. switching docs endpoints via ?e=) must feel
+ * instant — a full-page morph here reads as the UI not responding.
+ */
+export const skipSamePageTransition: ViewTransitionsFeatureOptions['onViewTransitionCreated'] =
+  ({ transition, from, to }) => {
+    if (routePathOf(from) === routePathOf(to)) transition.skipTransition();
+  };
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,13 +36,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(),
-      withViewTransitions({
-        // Same-page navigations (e.g. switching docs endpoints via ?e=) must
-        // feel instant — a full-page morph here reads as the UI not responding.
-        onViewTransitionCreated: ({ transition, from, to }) => {
-          if (routePathOf(from) === routePathOf(to)) transition.skipTransition();
-        },
-      }),
+      withViewTransitions({ onViewTransitionCreated: skipSamePageTransition }),
     ),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),

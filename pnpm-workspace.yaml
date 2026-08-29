@@ -1,0 +1,21 @@
+# The Express API is the workspace root; the Angular dashboard is the one
+# package under it. Both are private, so nothing here is ever published.
+packages:
+  - "frontend/angular"
+
+# pnpm refuses to run install scripts unless the package is allowed here.
+# argon2 links (or downloads) a native binding; the rest fetch a platform
+# binary or a native index. Without them the API cannot hash passwords and the
+# Angular builder cannot start.
+allowBuilds:
+  argon2: true
+  esbuild: true
+  "@parcel/watcher": true
+  lmdb: true
+  msgpackr-extract: true
+
+# pnpm holds back releases younger than its minimum-release-age window as a
+# supply-chain guard; entries here are versions already reviewed and let
+# through. pnpm appends to this list itself on install.
+minimumReleaseAgeExclude:
+  - express-rate-limit@8.7.0

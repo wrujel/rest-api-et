@@ -1,9 +1,9 @@
 import express from "express";
-import { get, merge } from "lodash";
 
 import { getUserById } from "../db/users";
 import { getProductById } from "../db/product";
 import { verifyAccessToken } from "../helpers";
+import { AuthenticatedRequest } from "../types";
 
 export const isAuthenticated = async (
   req: express.Request,
@@ -11,7 +11,7 @@ export const isAuthenticated = async (
   next: express.NextFunction
 ) => {
   try {
-    const header = get(req, "headers.authorization") as string | undefined;
+    const header = req.headers.authorization;
     const token = header?.startsWith("Bearer ") ? header.slice(7) : null;
     if (!token) return res.sendStatus(401);
 
@@ -21,7 +21,7 @@ export const isAuthenticated = async (
     const user = await getUserById(userId);
     if (!user) return res.sendStatus(401);
 
-    merge(req, { identity: user });
+    (req as AuthenticatedRequest).identity = user;
 
     return next();
   } catch (error) {
@@ -30,7 +30,7 @@ export const isAuthenticated = async (
 };
 
 export const isOwner = async (
-  req: any,
+  req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
@@ -41,10 +41,11 @@ export const isOwner = async (
     const product = await getProductById(id.toString());
     if (!product) return res.sendStatus(404);
 
-    if (product.user.toString() !== req.identity._id.toString())
+    const { identity } = req as AuthenticatedRequest;
+    if (product.user.toString() !== identity._id.toString())
       return res.sendStatus(403);
 
-    next();
+    return next();
   } catch (error) {
     return res.sendStatus(400);
   }

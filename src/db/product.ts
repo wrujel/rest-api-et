@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument, InferSchemaType } from "mongoose";
 
 const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
@@ -6,6 +6,10 @@ const ProductSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
+
+export type ProductDocument = HydratedDocument<
+  InferSchemaType<typeof ProductSchema>
+>;
 
 export const ProductModel = mongoose.model("Product", ProductSchema);
 

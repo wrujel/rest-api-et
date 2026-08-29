@@ -2,20 +2,35 @@ import express from "express";
 import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { UserModel, getUserByEmail, createUser, setRefreshToken } from "../db/users";
+import {
+  UserModel,
+  getUserByEmail,
+  createUser,
+  setRefreshToken,
+} from "../db/users";
 import {
   hashToken,
-  signAccessToken,
   signRefreshToken,
   REFRESH_TOKEN_TTL_MS,
 } from "../helpers";
 
-const API_PUBLIC_URL = process.env.API_PUBLIC_URL || "http://localhost:8080";
 const REFRESH_COOKIE = "refreshToken";
 
+export type OAuthProvider = "github" | "google";
+
+/**
+ * Read from the environment on every access rather than captured at import
+ * time: the app is built before `dotenv` has necessarily run under some
+ * entrypoints, and `GET /api/auth/providers` must reflect the live config.
+ * Literal getters stay enumerable, so `res.json(oauthConfig)` still serializes.
+ */
 export const oauthConfig = {
-  github: !!(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET),
-  google: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+  get github() {
+    return !!(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET);
+  },
+  get google() {
+    return !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+  },
 };
 
 type OAuthProfile = {
@@ -23,7 +38,7 @@ type OAuthProfile = {
   username: string;
 };
 
-async function findOrCreateUser(profile: OAuthProfile) {
+export async function findOrCreateUser(profile: OAuthProfile) {
   if (!profile.email) {
     throw new Error("The provider did not share an email address.");
   }
@@ -46,36 +61,46 @@ async function findOrCreateUser(profile: OAuthProfile) {
   });
 }
 
+// `any` on purpose: passport typings vary per strategy package, and a narrower
+// signature fails to match any of their overloads.
+type VerifyCallback = (err: any, user?: any) => void;
+
+/** Shared verify step for both providers — they differ only in how the
+ *  profile exposes an email and a display name. */
+const verifyOAuthProfile =
+  (toProfile: (profile: any) => OAuthProfile) =>
+  async (
+    _accessToken: string,
+    _refreshToken: string,
+    profile: any,
+    done: VerifyCallback
+  ) => {
+    try {
+      done(null, await findOrCreateUser(toProfile(profile)));
+    } catch (error) {
+      done(error);
+    }
+  };
+
 export function setupOAuthStrategies() {
+  const apiPublicUrl = process.env.API_PUBLIC_URL || "http://localhost:8080";
+
   if (oauthConfig.github) {
     passport.use(
       new GitHubStrategy(
         {
           clientID: process.env.GITHUB_CLIENT_ID!,
           clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-          callbackURL: `${API_PUBLIC_URL}/api/auth/github/callback`,
+          callbackURL: `${apiPublicUrl}/api/auth/github/callback`,
           scope: ["user:email"],
         },
-        async (
-          _accessToken: string,
-          _refreshToken: string,
-          profile: any,
-          done: (err: any, user?: any) => void
-        ) => {
-          try {
-            const email =
-              profile.emails?.find((e: any) => e.primary)?.value ??
-              profile.emails?.[0]?.value ??
-              null;
-            const user = await findOrCreateUser({
-              email,
-              username: profile.username || profile.displayName || "github",
-            });
-            done(null, user);
-          } catch (error) {
-            done(error);
-          }
-        }
+        verifyOAuthProfile((profile) => ({
+          email:
+            profile.emails?.find((e: any) => e.primary)?.value ??
+            profile.emails?.[0]?.value ??
+            null,
+          username: profile.username || profile.displayName || "github",
+        }))
       )
     );
   }
@@ -86,83 +111,72 @@ export function setupOAuthStrategies() {
         {
           clientID: process.env.GOOGLE_CLIENT_ID!,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-          callbackURL: `${API_PUBLIC_URL}/api/auth/google/callback`,
+          callbackURL: `${apiPublicUrl}/api/auth/google/callback`,
           scope: ["profile", "email"],
         },
-        async (
-          _accessToken: string,
-          _refreshToken: string,
-          profile: any,
-          done: (err: any, user?: any) => void
-        ) => {
-          try {
-            const email = profile.emails?.[0]?.value ?? null;
-            const user = await findOrCreateUser({
-              email,
-              username: profile.displayName || "google",
-            });
-            done(null, user);
-          } catch (error) {
-            done(error);
-          }
-        }
+        verifyOAuthProfile((profile) => ({
+          email: profile.emails?.[0]?.value ?? null,
+          username: profile.displayName || "google",
+        }))
       )
     );
   }
 }
 
 export const providers = (_req: express.Request, res: express.Response) => {
-  return res.status(200).json(oauthConfig).end();
+  return res.status(200).json(oauthConfig);
 };
 
-export const oauthEntry = (provider: "github" | "google") => {
+const notConfigured = (res: express.Response, provider: OAuthProvider) =>
+  res
+    .status(501)
+    .json({ message: `${provider} sign-in is not configured on this server.` });
+
+export const oauthEntry = (provider: OAuthProvider) => {
   return (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
-    if (!oauthConfig[provider]) {
-      return res
-        .status(501)
-        .json({ message: `${provider} sign-in is not configured on this server.` });
-    }
+    if (!oauthConfig[provider]) return notConfigured(res, provider);
     return passport.authenticate(provider, { session: false })(req, res, next);
   };
 };
 
-export const oauthCallback = (provider: "github" | "google") => {
+export const oauthCallback = (provider: OAuthProvider) => {
   return (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
-    if (!oauthConfig[provider]) {
-      return res
-        .status(501)
-        .json({ message: `${provider} sign-in is not configured on this server.` });
-    }
-    passport.authenticate(provider, { session: false }, async (err: any, user: any) => {
-      if (err || !user) {
-        console.log(err || "OAuth callback: no user");
-        return res.redirect("/login?error=oauth");
+    if (!oauthConfig[provider]) return notConfigured(res, provider);
+
+    return passport.authenticate(
+      provider,
+      { session: false },
+      async (err: unknown, user: any) => {
+        if (err || !user) {
+          console.log(err || "OAuth callback: no user");
+          return res.redirect("/login?error=oauth");
+        }
+        try {
+          const userId = user._id.toString();
+          const refreshToken = signRefreshToken(userId);
+          await setRefreshToken(userId, hashToken(refreshToken));
+          res.cookie(REFRESH_COOKIE, refreshToken, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: process.env.ENVIRONMENT === "production",
+            path: "/api/auth",
+            maxAge: REFRESH_TOKEN_TTL_MS,
+          });
+          // The SPA's /auth/callback page exchanges the cookie for an access token.
+          return res.redirect("/auth/callback");
+        } catch (error) {
+          console.log(error);
+          return res.redirect("/login?error=oauth");
+        }
       }
-      try {
-        const userId = user._id.toString();
-        const refreshToken = signRefreshToken(userId);
-        await setRefreshToken(userId, hashToken(refreshToken));
-        res.cookie(REFRESH_COOKIE, refreshToken, {
-          httpOnly: true,
-          sameSite: "lax",
-          secure: process.env.ENVIRONMENT === "production",
-          path: "/api/auth",
-          maxAge: REFRESH_TOKEN_TTL_MS,
-        });
-        // The SPA's /auth/callback page exchanges the cookie for an access token.
-        return res.redirect("/auth/callback");
-      } catch (error) {
-        console.log(error);
-        return res.redirect("/login?error=oauth");
-      }
-    })(req, res, next);
+    )(req, res, next);
   };
 };

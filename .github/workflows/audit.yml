@@ -1,0 +1,47 @@
+# Dependency vulnerabilities, reported back to the Content Studio.
+#
+# The studio's scheduler dispatches this MONTHLY (and on demand), waits for the
+# run, and reads the MONITOR_AUDIT line below into the project's "Deps" tag and
+# the Monitoring dashboard's advisories list. Nothing is committed here and no
+# secret is needed.
+#
+# The audit command must NOT fail this workflow when vulnerabilities exist
+# (report, don't gate) — a red run means the tooling itself broke.
+name: Audit
+
+on:
+  workflow_dispatch: # the studio's scheduler is the only trigger
+
+concurrency:
+  group: audit-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the version out of the root package.json's `packageManager` field.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      # Lockfile-only: `pnpm audit` resolves the whole workspace (API and
+      # dashboard) straight out of pnpm-lock.yaml, so there is no install to
+      # wait on. `|| true` is load-bearing — pnpm audit exits non-zero when
+      # vulnerabilities exist, which is the normal case being reported.
+      - name: Audit dependencies
+        run: pnpm audit --json > audit.json || true
+
+      # `always()`: a failing audit step still wrote what it wrote, and a
+      # MISSING report must emit NOTHING (reads as "No report"), never zeros.
+      - name: Report to the studio
+        if: always()
+        run: node .github/scripts/audit-sentinel.mjs

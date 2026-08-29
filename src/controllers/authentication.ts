@@ -61,19 +61,22 @@ export const login = async (req: express.Request, res: express.Response) => {
     );
     if (!user) return res.sendStatus(401);
 
-    const { password: storedHash, salt } = user.authentication;
+    const auth = user.authentication;
     // OAuth-only accounts have no password hash — they must use their provider.
-    if (!storedHash) return res.sendStatus(401);
+    const storedHash = auth?.password;
+    if (!auth || !storedHash) return res.sendStatus(401);
 
     let valid: boolean;
     if (isArgon2Hash(storedHash)) {
       valid = await verifyPassword(storedHash, password);
     } else {
       // Pre-JWT account: verify with the legacy scheme, then migrate to argon2.
-      valid = salt ? verifyLegacyPassword(salt, password, storedHash) : false;
+      valid = auth.salt
+        ? verifyLegacyPassword(auth.salt, password, storedHash)
+        : false;
       if (valid) {
-        user.authentication.password = await hashPassword(password);
-        user.authentication.salt = undefined;
+        auth.password = await hashPassword(password);
+        auth.salt = undefined;
         await user.save();
       }
     }
@@ -88,7 +91,7 @@ export const login = async (req: express.Request, res: express.Response) => {
       email: user.email,
       accessToken,
     };
-    return res.status(200).json(body).end();
+    return res.status(200).json(body);
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
@@ -114,7 +117,7 @@ export const register = async (req: express.Request, res: express.Response) => {
       username: user.username,
       email: user.email,
     };
-    return res.status(201).json(body).end();
+    return res.status(201).json(body);
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
@@ -135,7 +138,7 @@ export const refresh = async (req: express.Request, res: express.Response) => {
     const user = await getUserById(userId).select(
       "+authentication.refreshToken"
     );
-    if (!user || user.authentication.refreshToken !== hashToken(token)) {
+    if (!user || user.authentication?.refreshToken !== hashToken(token)) {
       clearRefreshCookie(res);
       return res.sendStatus(401);
     }
@@ -143,8 +146,7 @@ export const refresh = async (req: express.Request, res: express.Response) => {
     const accessToken = await issueTokens(res, userId);
     return res
       .status(200)
-      .json({ accessToken, email: user.email, username: user.username })
-      .end();
+      .json({ accessToken, email: user.email, username: user.username });
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);

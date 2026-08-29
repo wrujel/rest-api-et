@@ -1,17 +1,19 @@
 import express from "express";
 import {
   getProducts,
-  getProductById as getProductById_,
-  createProduct as createProduct_,
+  getProductById as findProductById,
+  createProduct as insertProduct,
   deleteProductById,
   updateProductById,
 } from "../db/product";
+import { AuthenticatedRequest } from "../types";
 
 export const getAllProducts = async (
-  req: express.Request,
+  _req: express.Request,
   res: express.Response
 ) => {
   try {
+    // `user` is populated, so it carries the owner document rather than an id.
     const products: any[] = await getProducts();
     const response = products.map((product) => {
       return {
@@ -23,7 +25,7 @@ export const getAllProducts = async (
         email: product.user.email,
       };
     });
-    return res.status(200).json(response).end();
+    return res.status(200).json(response);
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
@@ -35,30 +37,30 @@ export const getProductById = async (
   res: express.Response
 ) => {
   try {
-    const { id } = req.params;
-    const product = await getProductById_(id);
+    const product = await findProductById(String(req.params["id"]));
 
     if (!product) {
       return res.sendStatus(404);
     }
 
-    return res.status(200).json(product).end();
+    return res.status(200).json(product);
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
   }
 };
 
-export const createProduct = async (req: any, res: express.Response) => {
+export const createProduct = async (
+  req: express.Request,
+  res: express.Response
+) => {
   try {
-    const product = await createProduct_({
+    const { identity } = req as AuthenticatedRequest;
+    const product = await insertProduct({
       ...req.body,
-      user: req.identity._id.toString(),
+      user: identity._id.toString(),
     });
-    return res
-      .status(201)
-      .json({ id: product._id })
-      .end();
+    return res.status(201).json({ id: product._id });
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
@@ -71,8 +73,9 @@ export const deleteProduct = async (
 ) => {
   try {
     const { id } = req.query;
+    if (!id) return res.sendStatus(400);
 
-    await deleteProductById(id.toString());
+    await deleteProductById(String(id));
 
     return res.sendStatus(204);
   } catch (error) {
@@ -81,11 +84,15 @@ export const deleteProduct = async (
   }
 };
 
-export const updateProduct = async (req: any, res: express.Response) => {
+export const updateProduct = async (
+  req: express.Request,
+  res: express.Response
+) => {
   try {
     const { id } = req.query;
+    if (!id) return res.sendStatus(400);
 
-    await updateProductById(id.toString(), req.body);
+    await updateProductById(String(id), req.body);
 
     return res.status(200).end();
   } catch (error) {

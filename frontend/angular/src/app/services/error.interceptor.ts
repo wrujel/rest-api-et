@@ -6,9 +6,14 @@ import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
 
 const SILENT_ENDPOINTS = ['/api/auth/login', '/api/auth/register'];
-const RETRIED_AFTER_REFRESH = new HttpContextToken<boolean>(() => false);
+/**
+ * Marks a request as already replayed after a token refresh, so a second 401
+ * signs the visitor out instead of looping. Exported so callers (and specs)
+ * can seed it on an outgoing request.
+ */
+export const RETRIED_AFTER_REFRESH = new HttpContextToken<boolean>(() => false);
 
-function friendlyMessage(error: HttpErrorResponse): string {
+export function friendlyMessage(error: HttpErrorResponse): string {
   if (error.status === 0) return 'Cannot reach the server. Check your connection.';
   if (error.status === 400) return 'That request was invalid. Please review the form and try again.';
   if (error.status === 401) return 'Your session expired. Please sign in again.';

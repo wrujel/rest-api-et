@@ -1,4 +1,8 @@
 /node_modules
 /dist
+/coverage
+/audit.json
+.vitest.json
+.vercel
 .vscode
 .env
