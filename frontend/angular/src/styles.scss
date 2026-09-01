@@ -225,6 +225,12 @@ html.theme-dark .status-chip[data-status^='5'],
   @extend %glass-bar;
 }
 
+/* Material leaves the dialog surface at `elevation-shadow: none`, so modals
+   sit flat on the backdrop. Lift them onto the app's elevation scale. */
+.mat-mdc-dialog-container {
+  --mat-dialog-container-elevation-shadow: var(--app-elevation-3);
+}
+
 /* Backdrop blur for Material dialogs */
 .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
   backdrop-filter: blur(6px);

@@ -122,7 +122,15 @@
 
 .page-table-scroll {
   width: 100%;
-  overflow-x: auto;
+  /* A bounded height is what makes the sticky header stick: without it the
+     container never scrolls vertically and `sticky: true` is inert. */
+  max-height: clamp(320px, 60vh, 720px);
+  overflow: auto;
+  /* Reserve the scrollbar track so the columns never reflow when it comes and
+     goes, and pad the block end by the 6px `listStagger` rise so an entering
+     row cannot flash a scrollbar of its own on first load. */
+  scrollbar-gutter: stable;
+  padding-bottom: 6px;
 }
 
 .page-table {
@@ -136,7 +144,10 @@
   color: var(--mat-sys-on-surface-variant);
   text-transform: uppercase;
   font-size: 0.72rem;
-  background: color-mix(in oklch, var(--mat-sys-surface) 60%, transparent);
+  /* The same tint as before, but mixed against the card fill rather than
+     transparent: rows now slide under this header, so it has to be opaque or
+     they show through it. */
+  background: color-mix(in oklch, var(--mat-sys-surface) 60%, var(--mat-sys-surface-container-low));
 }
 
 .page-table .mat-mdc-row {
