@@ -10,7 +10,7 @@
   <a href='/'>
     <img
       src='screenshot.webp'
-      alt='Screenshot of the app'
+      alt='REST API docs dashboard listing product endpoints beside a sample JSON response and a curl snippet with a Test Request button.'
       width='100%'
     />
   </a>
@@ -36,7 +36,7 @@
 </div>
 
 <div align='center'>
-  REST API built with Express and TypeScript, featuring argon2 password hashing, JWT access tokens with rotating refresh cookies, GitHub and Google OAuth sign-in, and product CRUD with ownership checks. Ships with an Angular 20 dashboard that documents every endpoint and lets you call it live.
+  A REST API built with Express and TypeScript, featuring argon2id password hashing, 15-minute JWT access tokens with rotating refresh cookies, GitHub and Google OAuth, rate-limited credential endpoints, and product CRUD guarded by authentication and ownership middleware. Legacy HMAC accounts re-hash transparently on their next login. Ships with an Angular 20 dashboard that documents every endpoint, searches them from a sidebar and calls them live.
 
 [Demo][demo-link] · [Report issue](/issues) · [Suggest something](/issues)
 
