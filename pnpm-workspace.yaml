@@ -19,3 +19,15 @@ allowBuilds:
 # through. pnpm appends to this list itself on install.
 minimumReleaseAgeExclude:
   - express-rate-limit@8.7.0
+
+# Transitive security fixes.
+#   vite 8.3.0 -> GHSA-587h-7wmj-h5pm, GHSA-698v-4r3x-3vcv, GHSA-r825-w8mm-5pxw
+#   (launch-editor, fixed in 8.3.3). @angular/build 22.2.x pins vite 8.3.0
+#   exactly; drop this once an @angular/build release pins 8.3.3 or later.
+#
+# Duplicated in package.json under `pnpm.overrides`: pnpm 11 reads this file
+# and ignores the package.json copy (with a warning), but Vercel may install
+# with pnpm 9, which reads only the package.json copy. The lockfile records
+# the override either way, so the two must stay in sync.
+overrides:
+  "@angular/build>vite": 8.3.4
